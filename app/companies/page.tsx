@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -12,6 +12,12 @@ import Link from "next/link"
 
 export default function CompaniesPage() {
   const [followedCompanies, setFollowedCompanies] = useState<number[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [sortBy, setSortBy] = useState("")
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [minRating, setMinRating] = useState<number | null>(null)
 
   const toggleFollowCompany = (companyId: number) => {
     setFollowedCompanies((prev) =>
@@ -19,92 +25,192 @@ export default function CompaniesPage() {
     )
   }
 
+  const toggleFilter = (value: string, currentFilters: string[], setFilters: (filters: string[]) => void) => {
+    if (currentFilters.includes(value)) {
+      setFilters(currentFilters.filter((item) => item !== value))
+    } else {
+      setFilters([...currentFilters, value])
+    }
+  }
+
   const companies = [
     {
       id: 1,
-      name: "TechCorp Inc.",
-      logo: "🚀",
+      name: "Systems Limited",
+      logo: "💼",
       industry: "Technology",
       size: "1000-5000",
-      location: "San Francisco, CA",
-      rating: 4.8,
-      reviews: 234,
-      openJobs: 12,
-      description: "Leading technology company focused on innovative solutions and cutting-edge software development.",
-      benefits: ["Remote Work", "Health Insurance", "Stock Options", "Flexible Hours"],
-      techStack: ["React", "Node.js", "AWS", "Python"],
+      location: "Lahore, Pakistan",
+      rating: 4.7,
+      reviews: 342,
+      openJobs: 18,
+      description: "Pakistan's leading IT services company providing enterprise solutions, software development, and digital transformation services globally.",
+      benefits: ["Health Insurance", "Provident Fund", "Annual Bonus", "Training Programs"],
+      techStack: ["Java", ".NET", "SAP", "Oracle", "React"],
     },
     {
       id: 2,
-      name: "DesignStudio",
-      logo: "🎨",
-      industry: "Design",
-      size: "50-200",
-      location: "New York, NY",
-      rating: 4.6,
-      reviews: 89,
-      openJobs: 5,
-      description: "Creative design agency specializing in brand identity, web design, and user experience.",
-      benefits: ["Creative Freedom", "Health Insurance", "Paid Time Off", "Learning Budget"],
-      techStack: ["Figma", "Adobe Creative Suite", "Sketch", "Principle"],
+      name: "NetSol Technologies",
+      logo: "🌐",
+      industry: "Software Solutions",
+      size: "500-1000",
+      location: "Lahore, Pakistan",
+      rating: 4.5,
+      reviews: 198,
+      openJobs: 14,
+      description: "Global provider of IT solutions and services with expertise in leasing and finance applications for Fortune 500 companies.",
+      benefits: ["Medical Insurance", "Flexible Hours", "Stock Options", "Performance Bonuses"],
+      techStack: [".NET", "Java", "Angular", "Azure", "SQL Server"],
     },
     {
       id: 3,
-      name: "StartupXYZ",
-      logo: "💡",
-      industry: "Fintech",
-      size: "10-50",
-      location: "Austin, TX",
-      rating: 4.4,
-      reviews: 45,
-      openJobs: 8,
-      description: "Fast-growing fintech startup revolutionizing digital payments and financial services.",
-      benefits: ["Equity", "Flexible Schedule", "Health Insurance", "Growth Opportunities"],
-      techStack: ["React", "Python", "PostgreSQL", "Docker"],
+      name: "Arbisoft",
+      logo: "🤖",
+      industry: "AI/ML",
+      size: "200-500",
+      location: "Lahore, Pakistan",
+      rating: 4.8,
+      reviews: 156,
+      openJobs: 12,
+      description: "AI and data science company partnering with global tech leaders, building cutting-edge machine learning solutions.",
+      benefits: ["Remote Work", "Health Insurance", "Learning Budget", "Flexible Schedule"],
+      techStack: ["Python", "TensorFlow", "React", "Django", "AWS"],
     },
     {
       id: 4,
-      name: "CloudTech Solutions",
-      logo: "☁️",
-      industry: "Cloud Computing",
-      size: "500-1000",
-      location: "Seattle, WA",
-      rating: 4.7,
-      reviews: 156,
-      openJobs: 15,
-      description: "Enterprise cloud solutions provider helping businesses scale and modernize their infrastructure.",
-      benefits: ["Remote Work", "401k Match", "Health Insurance", "Professional Development"],
-      techStack: ["AWS", "Kubernetes", "Terraform", "Go"],
+      name: "TPS (The Professional Services)",
+      logo: "⚙️",
+      industry: "ERP Solutions",
+      size: "100-500",
+      location: "Karachi, Pakistan",
+      rating: 4.4,
+      reviews: 89,
+      openJobs: 10,
+      description: "Leading ERP solutions provider in Pakistan, specializing in SAP implementation and business process optimization.",
+      benefits: ["Health Insurance", "Annual Increments", "Training & Certifications", "Team Events"],
+      techStack: ["SAP", "ABAP", "Fiori", "HANA", "Cloud Platform"],
     },
     {
       id: 5,
-      name: "GrowthCo Marketing",
-      logo: "📈",
-      industry: "Marketing",
-      size: "200-500",
-      location: "Los Angeles, CA",
-      rating: 4.3,
-      reviews: 78,
-      openJobs: 6,
-      description: "Full-service digital marketing agency helping brands grow through data-driven strategies.",
-      benefits: ["Flexible Hours", "Health Insurance", "Bonus Structure", "Team Events"],
-      techStack: ["Google Analytics", "HubSpot", "Salesforce", "Adobe Creative Suite"],
+      name: "Zameen.com",
+      logo: "🏢",
+      industry: "PropTech",
+      size: "500-1000",
+      location: "Lahore, Pakistan",
+      rating: 4.6,
+      reviews: 245,
+      openJobs: 15,
+      description: "Pakistan's leading property portal revolutionizing real estate with technology-driven solutions.",
+      benefits: ["Health Insurance", "Paid Leaves", "Performance Bonuses", "Career Growth"],
+      techStack: ["React", "Node.js", "MongoDB", "AWS", "Docker"],
     },
     {
       id: 6,
-      name: "DataFlow Analytics",
-      logo: "📊",
-      industry: "Data Science",
-      size: "100-500",
-      location: "Boston, MA",
+      name: "Afiniti",
+      logo: "🧠",
+      industry: "AI Technology",
+      size: "200-500",
+      location: "Islamabad, Pakistan",
       rating: 4.9,
-      reviews: 112,
-      openJobs: 9,
-      description: "Advanced analytics and machine learning company providing insights for enterprise clients.",
-      benefits: ["Remote Work", "Stock Options", "Health Insurance", "Learning Budget"],
-      techStack: ["Python", "R", "TensorFlow", "Apache Spark"],
+      reviews: 134,
+      openJobs: 11,
+      description: "Global AI company using behavioral pairing to transform customer interactions for Fortune 500 enterprises.",
+      benefits: ["Competitive Salary", "Stock Options", "Health Insurance", "Professional Development"],
+      techStack: ["Python", "Java", "Machine Learning", "Big Data", "Kubernetes"],
+    },
+    {
+      id: 7,
+      name: "Inbox Business Technologies",
+      logo: "📱",
+      industry: "Mobile Solutions",
+      size: "50-200",
+      location: "Islamabad, Pakistan",
+      rating: 4.3,
+      reviews: 67,
+      openJobs: 8,
+      description: "Mobile-first technology company delivering innovative apps and digital solutions for businesses across Pakistan.",
+      benefits: ["Flexible Hours", "Health Insurance", "Learning Opportunities", "Modern Office"],
+      techStack: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"],
+    },
+    {
+      id: 8,
+      name: "Techlogix",
+      logo: "🔧",
+      industry: "Technology",
+      size: "500-1000",
+      location: "Karachi, Pakistan",
+      rating: 4.5,
+      reviews: 178,
+      openJobs: 13,
+      description: "IT solutions and consulting firm providing enterprise technology services, cloud solutions, and digital transformation.",
+      benefits: ["Health Insurance", "Provident Fund", "Annual Bonus", "Training Programs"],
+      techStack: ["Java", "Python", "AWS", "Docker", "Microservices"],
     },
   ]
+
+  // Helper function to match company size with filter ranges
+  const matchesSize = (companySize: string, filterSize: string): boolean => {
+    const sizeMap: { [key: string]: string[] } = {
+      "1-10": ["1-10", "10-50"],
+      "11-50": ["10-50", "11-50"],
+      "51-200": ["50-200"],
+      "201-1000": ["100-500", "200-500", "500-1000"],
+      "1000+": ["1000-5000"],
+    }
+    return sizeMap[filterSize]?.includes(companySize) || false
+  }
+
+  // Filter and sort companies
+  const filteredAndSortedCompanies = useMemo(() => {
+    let result = [...companies]
+
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(
+        (company) =>
+          company.name.toLowerCase().includes(query) ||
+          company.description.toLowerCase().includes(query) ||
+          company.industry.toLowerCase().includes(query)
+      )
+    }
+
+    // Industry filter
+    if (selectedIndustries.length > 0) {
+      result = result.filter((company) => selectedIndustries.includes(company.industry))
+    }
+
+    // Size filter
+    if (selectedSizes.length > 0) {
+      result = result.filter((company) => selectedSizes.some((size) => matchesSize(company.size, size)))
+    }
+
+    // Location filter
+    if (selectedLocations.length > 0) {
+      result = result.filter((company) =>
+        selectedLocations.some((loc) => company.location.includes(loc))
+      )
+    }
+
+    // Rating filter
+    if (minRating !== null) {
+      result = result.filter((company) => company.rating >= minRating)
+    }
+
+    // Sorting
+    if (sortBy === "rating") {
+      result.sort((a, b) => b.rating - a.rating)
+    } else if (sortBy === "jobs") {
+      result.sort((a, b) => b.openJobs - a.openJobs)
+    } else if (sortBy === "name") {
+      result.sort((a, b) => a.name.localeCompare(b.name))
+    } else if (sortBy === "size") {
+      const sizeOrder = ["10-50", "50-200", "100-500", "200-500", "500-1000", "1000-5000"]
+      result.sort((a, b) => sizeOrder.indexOf(b.size) - sizeOrder.indexOf(a.size))
+    }
+
+    return result
+  }, [companies, searchQuery, selectedIndustries, selectedSizes, selectedLocations, minRating, sortBy])
 
   return (
     <div className="container mx-auto px-4 py-8 text-white">
@@ -131,10 +237,14 @@ export default function CompaniesPage() {
                   <div>
                     <h3 className="font-medium mb-3">Industry</h3>
                     <div className="space-y-2">
-                      {["Technology", "Design", "Fintech", "Marketing", "Healthcare", "E-commerce"].map((industry) => (
+                      {["Technology", "Software Solutions", "AI/ML", "ERP Solutions", "PropTech", "AI Technology", "Mobile Solutions"].map((industry) => (
                         <div key={industry} className="flex items-center space-x-2">
-                          <Checkbox id={industry} />
-                          <label htmlFor={industry} className="text-sm text-gray-300">
+                          <Checkbox
+                            id={industry}
+                            checked={selectedIndustries.includes(industry)}
+                            onCheckedChange={() => toggleFilter(industry, selectedIndustries, setSelectedIndustries)}
+                          />
+                          <label htmlFor={industry} className="text-sm text-gray-300 cursor-pointer">
                             {industry}
                           </label>
                         </div>
@@ -148,8 +258,12 @@ export default function CompaniesPage() {
                     <div className="space-y-2">
                       {["1-10", "11-50", "51-200", "201-1000", "1000+"].map((size) => (
                         <div key={size} className="flex items-center space-x-2">
-                          <Checkbox id={size} />
-                          <label htmlFor={size} className="text-sm text-gray-300">
+                          <Checkbox
+                            id={size}
+                            checked={selectedSizes.includes(size)}
+                            onCheckedChange={() => toggleFilter(size, selectedSizes, setSelectedSizes)}
+                          />
+                          <label htmlFor={size} className="text-sm text-gray-300 cursor-pointer">
                             {size} employees
                           </label>
                         </div>
@@ -161,10 +275,14 @@ export default function CompaniesPage() {
                   <div>
                     <h3 className="font-medium mb-3">Location</h3>
                     <div className="space-y-2">
-                      {["Remote", "San Francisco", "New York", "Austin", "Seattle", "Boston"].map((location) => (
+                      {["Remote", "Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad"].map((location) => (
                         <div key={location} className="flex items-center space-x-2">
-                          <Checkbox id={location} />
-                          <label htmlFor={location} className="text-sm text-gray-300">
+                          <Checkbox
+                            id={location}
+                            checked={selectedLocations.includes(location)}
+                            onCheckedChange={() => toggleFilter(location, selectedLocations, setSelectedLocations)}
+                          />
+                          <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
                             {location}
                           </label>
                         </div>
@@ -175,7 +293,7 @@ export default function CompaniesPage() {
                   {/* Rating */}
                   <div>
                     <h3 className="font-medium mb-3">Rating</h3>
-                    <Select>
+                    <Select value={minRating?.toString() || ""} onValueChange={(value) => setMinRating(value ? parseFloat(value) : null)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Minimum rating" />
                       </SelectTrigger>
@@ -199,9 +317,14 @@ export default function CompaniesPage() {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input placeholder="Search companies..." className="pl-10 bg-gray-800 border-gray-700 text-white" />
+                  <Input
+                    placeholder="Search companies..."
+                    className="pl-10 bg-gray-800 border-gray-700 text-white"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-                <Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
@@ -217,12 +340,31 @@ export default function CompaniesPage() {
 
             {/* Results Count */}
             <div className="mb-6">
-              <p className="text-gray-400">{companies.length} companies found</p>
+              <p className="text-gray-400">{filteredAndSortedCompanies.length} companies found</p>
             </div>
 
             {/* Company Cards */}
             <div className="space-y-6">
-              {companies.map((company) => (
+              {filteredAndSortedCompanies.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-400 text-lg">No companies found matching your criteria.</p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => {
+                      setSearchQuery("")
+                      setSelectedIndustries([])
+                      setSelectedSizes([])
+                      setSelectedLocations([])
+                      setMinRating(null)
+                      setSortBy("")
+                    }}
+                  >
+                    Clear all filters
+                  </Button>
+                </div>
+              ) : (
+                filteredAndSortedCompanies.map((company) => (
                 <Card key={company.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -317,7 +459,8 @@ export default function CompaniesPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ))
+              )}
             </div>
 
             {/* Load More */}

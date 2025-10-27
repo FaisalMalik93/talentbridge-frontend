@@ -114,47 +114,7 @@ export default function CandidateProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">TB</span>
-            </div>
-            <span className="text-xl font-bold">TalentBridge</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/candidate/dashboard" className="hover:text-blue-400 transition-colors">
-              Dashboard
-            </Link>
-            <Link href="/jobs" className="hover:text-blue-400 transition-colors">
-              Find Jobs
-            </Link>
-            <Link href="/candidate/applications" className="hover:text-blue-400 transition-colors">
-              Applications
-            </Link>
-            <Link href="/candidate/profile" className="text-blue-400">
-              Profile
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Settings className="w-5 h-5" />
-            </Button>
-            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5" />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-white">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -521,6 +481,5 @@ export default function CandidateProfile() {
           </div>
         </div>
       </div>
-    </div>
   )
 }

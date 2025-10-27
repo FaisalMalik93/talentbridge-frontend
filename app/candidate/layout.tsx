@@ -1,7 +1,7 @@
 'use client';
 
 import { ProtectedRoute } from '@/components/auth/protected-route';
-import { Header } from '@/components/navigation/header';
+import { CandidateHeader } from '@/components/navigation/candidate-header';
 
 export default function CandidateLayout({
   children,
@@ -11,7 +11,7 @@ export default function CandidateLayout({
   return (
     <ProtectedRoute allowedRoles={['user', 'admin']}>
       <div className="min-h-screen bg-gray-900">
-        <Header />
+        <CandidateHeader />
         {children}
       </div>
     </ProtectedRoute>

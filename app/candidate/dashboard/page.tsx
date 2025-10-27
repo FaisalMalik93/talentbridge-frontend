@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,41 +22,54 @@ import {
   DollarSign,
 } from "lucide-react"
 import Link from "next/link"
+import { authService } from "@/lib/services/auth.service"
+import type { User as UserType } from "@/lib/types"
 
 export default function CandidateDashboard() {
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null)
   const [profileCompletion] = useState(75)
 
+  useEffect(() => {
+    const user = authService.getUser()
+    setCurrentUser(user)
+  }, [])
+
+  // TODO: Fetch real stats from backend
   const stats = [
     {
       title: "Profile Views",
-      value: "156",
-      change: "+12%",
+      value: "0",
+      change: "+0%",
       icon: Eye,
       color: "text-blue-400",
     },
     {
       title: "Applications Sent",
-      value: "23",
-      change: "+5",
+      value: "0",
+      change: "+0",
       icon: Briefcase,
       color: "text-green-400",
     },
     {
       title: "Saved Jobs",
-      value: "8",
-      change: "+2",
+      value: "0",
+      change: "+0",
       icon: Heart,
       color: "text-purple-400",
     },
     {
       title: "Interview Invites",
-      value: "4",
-      change: "+1",
+      value: "0",
+      change: "+0",
       icon: Calendar,
       color: "text-yellow-400",
     },
   ]
 
+  // TODO: Fetch real applications from backend
+  const recentApplications: any[] = []
+
+  /* DUMMY DATA - COMMENTED OUT
   const recentApplications = [
     {
       id: 1,
@@ -89,7 +102,12 @@ export default function CandidateDashboard() {
       logo: "📊",
     },
   ]
+  */
 
+  // TODO: Fetch real recommended jobs from backend
+  const recommendedJobs: any[] = []
+
+  /* DUMMY DATA - COMMENTED OUT
   const recommendedJobs = [
     {
       id: 1,
@@ -122,7 +140,12 @@ export default function CandidateDashboard() {
       logo: "📈",
     },
   ]
+  */
 
+  // TODO: Fetch real upcoming interviews from backend
+  const upcomingInterviews: any[] = []
+
+  /* DUMMY DATA - COMMENTED OUT
   const upcomingInterviews = [
     {
       id: 1,
@@ -143,6 +166,7 @@ export default function CandidateDashboard() {
       interviewer: "Mike Chen",
     },
   ]
+  */
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -160,78 +184,40 @@ export default function CandidateDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">TB</span>
+    <div className="container mx-auto px-4 py-8 text-white">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">
+          Welcome, {currentUser?.full_name || 'User'}!
+        </h1>
+        <p className="text-gray-400">Here's what's happening with your job search</p>
+      </div>
+
+      {/* Profile Completion Alert */}
+      <Card className="bg-blue-600/10 border-blue-600/50 mb-8">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-blue-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Complete Your Profile</h3>
+                <p className="text-blue-300">Your profile is {profileCompletion}% complete</p>
+              </div>
             </div>
-            <span className="text-xl font-bold">TalentBridge</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/candidate/dashboard" className="text-blue-400">
-              Dashboard
-            </Link>
-            <Link href="/jobs" className="hover:text-blue-400 transition-colors">
-              Find Jobs
-            </Link>
-            <Link href="/candidate/applications" className="hover:text-blue-400 transition-colors">
-              Applications
-            </Link>
-            <Link href="/candidate/profile" className="hover:text-blue-400 transition-colors">
-              Profile
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Settings className="w-5 h-5" />
-            </Button>
-            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5" />
+            <div className="flex items-center space-x-4">
+              <Progress value={profileCompletion} className="w-32" />
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                Complete Profile
+              </Button>
             </div>
           </div>
-        </div>
-      </header>
+        </CardContent>
+      </Card>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, John!</h1>
-          <p className="text-gray-400">Here's what's happening with your job search</p>
-        </div>
-
-        {/* Profile Completion Alert */}
-        <Card className="bg-blue-600/10 border-blue-600/50 mb-8">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
-                  <User className="w-6 h-6 text-blue-400" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white">Complete Your Profile</h3>
-                  <p className="text-blue-300">Your profile is {profileCompletion}% complete</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Progress value={profileCompletion} className="w-32" />
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                  Complete Profile
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+      {/* Stats Cards */}
+      <div className="grid md:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
             <Card key={index} className="bg-gray-800 border-gray-700">
               <CardContent className="p-6">
@@ -244,14 +230,14 @@ export default function CandidateDashboard() {
               </CardContent>
             </Card>
           ))}
-        </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Recent Applications */}
-            <Card className="bg-gray-800 border-gray-700">
+      {/* Main Content */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Recent Applications */}
+          <Card className="bg-gray-800 border-gray-700">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Recent Applications
@@ -452,8 +438,7 @@ export default function CandidateDashboard() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
