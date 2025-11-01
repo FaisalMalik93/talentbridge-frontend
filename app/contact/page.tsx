@@ -225,7 +225,7 @@ export default function ContactPage() {
                         <h3 className="font-semibold mb-2">{method.title}</h3>
                         <p className="text-gray-400 text-sm mb-3">{method.description}</p>
                         <p className="text-white mb-3">{method.contact}</p>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           {method.action}
                         </Button>
                       </div>

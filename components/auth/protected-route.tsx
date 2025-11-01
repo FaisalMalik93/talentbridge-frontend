@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/auth-context';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { UserRole } from '@/lib/types';
 
@@ -18,13 +18,16 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isLoading) return;
 
     // Require authentication
     if (requireAuth && !isAuthenticated) {
-      router.push('/auth/signin');
+      // Include redirect URL so user is sent back after signing in
+      const redirectUrl = encodeURIComponent(pathname);
+      router.push(`/auth/signin?redirect=${redirectUrl}`);
       return;
     }
 

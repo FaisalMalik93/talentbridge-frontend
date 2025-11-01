@@ -250,7 +250,7 @@ export default function SavedJobsPage() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                     <div className="flex items-center space-x-2">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                         {job.type}
                       </Badge>
                     </div>
@@ -266,7 +266,7 @@ export default function SavedJobsPage() {
                       <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
                         <Share2 className="w-4 h-4" />
                       </Button>
-                      <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                      <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                         View Details
                       </Button>
                       <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
@@ -299,7 +299,7 @@ export default function SavedJobsPage() {
         {filteredJobs.length > 0 && (
           <div className="mt-8 flex justify-center">
             <div className="flex space-x-4">
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
                 Apply to Selected
               </Button>
               <Button variant="outline" className="border-red-600 text-red-400 hover:bg-red-600/10">

@@ -125,7 +125,7 @@ export default function AboutPage() {
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
               Get Started Today
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
               Learn More
             </Button>
           </div>
@@ -322,7 +322,7 @@ export default function AboutPage() {
               Start Your Journey
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
               For Employers
             </Button>
           </div>

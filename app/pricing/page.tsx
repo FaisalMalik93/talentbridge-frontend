@@ -266,7 +266,7 @@ export default function PricingPage() {
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
               Start Free Trial
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
               Contact Sales
             </Button>
           </div>

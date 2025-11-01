@@ -305,16 +305,16 @@ export default function CandidateInterviews() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                       <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                           {interview.type}
                         </Badge>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <MessageSquare className="w-4 h-4 mr-1" />
                           Message
                         </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <FileText className="w-4 h-4 mr-1" />
                           Prepare
                         </Button>
@@ -378,16 +378,16 @@ export default function CandidateInterviews() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                       <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                           {interview.type}
                         </Badge>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <FileText className="w-4 h-4 mr-1" />
                           View Notes
                         </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <MessageSquare className="w-4 h-4 mr-1" />
                           Follow Up
                         </Button>

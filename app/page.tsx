@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, MapPin, Briefcase, Users, CheckCircle, Zap, Shield, Clock, ChevronDown, Building } from "lucide-react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Search, MapPin, Briefcase, Users, CheckCircle, Zap, Shield, Clock, Building } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/navigation/header"
 
@@ -62,7 +63,9 @@ export default function HomePage() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-8">Find job openings now</Button>
+              <Link href="/jobs">
+                <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-8">Find job openings now</Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -157,7 +160,9 @@ export default function HomePage() {
                   </SelectContent>
                 </Select>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">Search</Button>
+                <Link href="/jobs">
+                  <Button className="bg-blue-600 hover:bg-blue-700">Search</Button>
+                </Link>
               </div>
 
               {/* Filter Tags */}
@@ -228,19 +233,23 @@ export default function HomePage() {
                             {job.location}
                           </span>
                           <span>{job.salary}</span>
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                             {job.type}
                           </Badge>
                         </div>
                       </div>
                     </div>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                        Apply Now
-                      </Button>
+                      <Link href="/jobs">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                          View Details
+                        </Button>
+                      </Link>
+                      <Link href="/auth/signin">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                          Apply Now
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
@@ -319,7 +328,7 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">Frequently asked questions</h2>
 
-            <div className="space-y-4">
+            <Accordion type="single" collapsible className="space-y-4">
               {[
                 {
                   question: "What type of jobs are available here?",
@@ -347,16 +356,20 @@ export default function HomePage() {
                     "Job seekers can use our platform completely free. Premium features are available for enhanced visibility.",
                 },
               ].map((faq, index) => (
-                <Card key={index} className="bg-gray-800 border-gray-700">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between cursor-pointer">
-                      <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    </div>
-                  </CardContent>
-                </Card>
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="bg-gray-800 border border-gray-700 rounded-lg px-6"
+                >
+                  <AccordionTrigger className="text-lg font-semibold text-white hover:text-blue-400 hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-300 pt-2 pb-4">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </div>
       </section>
@@ -369,12 +382,16 @@ export default function HomePage() {
             Let our AI-powered platform find the perfect job match for you. Upload your CV and get started today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Start applying now
-            </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
-              Upload a job opening
-            </Button>
+            <Link href="/auth/signup">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Start applying now
+              </Button>
+            </Link>
+            <Link href="/post-job">
+              <Button size="lg" className="bg-gray-800 text-white border-2 border-white hover:bg-white hover:text-gray-900">
+                Upload a job opening
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -407,8 +424,8 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/career-advice" className="hover:text-white">
-                    Career Advice
+                  <Link href="/auth/signup" className="hover:text-white">
+                    Sign Up
                   </Link>
                 </li>
               </ul>
@@ -449,8 +466,8 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="hover:text-white">
-                    Privacy Policy
+                  <Link href="/companies" className="hover:text-white">
+                    Companies
                   </Link>
                 </li>
               </ul>
@@ -458,7 +475,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 TalentBridge. All rights reserved.</p>
+            <p>&copy; 2025 TalentBridge. All rights reserved.</p>
           </div>
         </div>
       </footer>

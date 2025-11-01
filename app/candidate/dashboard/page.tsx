@@ -242,7 +242,7 @@ export default function CandidateDashboard() {
                 <CardTitle className="flex items-center justify-between">
                   Recent Applications
                   <Link href="/candidate/applications">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                       View All
                     </Button>
                   </Link>
@@ -289,7 +289,7 @@ export default function CandidateDashboard() {
                 <CardTitle className="flex items-center justify-between">
                   Recommended for You
                   <Link href="/jobs">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                       View All Jobs
                     </Button>
                   </Link>
@@ -329,7 +329,7 @@ export default function CandidateDashboard() {
                           </span>
                         </div>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                             <Heart className="w-4 h-4" />
                           </Button>
                           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
@@ -356,15 +356,15 @@ export default function CandidateDashboard() {
                   <Upload className="w-4 h-4 mr-2" />
                   Upload New CV
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-700">
+                <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <FileText className="w-4 h-4 mr-2" />
                   Analyze CV
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-700">
+                <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <User className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-700">
+                <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Job Preferences
                 </Button>

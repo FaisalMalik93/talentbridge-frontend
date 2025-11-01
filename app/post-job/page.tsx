@@ -498,7 +498,7 @@ export default function PostJobPage() {
               </Button>
               <Button
                 variant="outline"
-                className="w-full border-gray-600 text-white hover:bg-gray-800"
+                className="w-full border-gray-600 text-black hover:bg-gray-800"
                 disabled={isSubmitting}
               >
                 Save as Draft

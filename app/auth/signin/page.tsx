@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,7 +17,8 @@ import { toast } from "sonner"
 
 export default function SignInPage() {
   const router = useRouter()
-  const { login } = useAuth()
+  const searchParams = useSearchParams()
+  const { login, user } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -25,6 +26,15 @@ export default function SignInPage() {
     password: "",
     rememberMe: false,
   })
+
+  const redirectUrl = searchParams.get('redirect') || '/dashboard'
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push(redirectUrl)
+    }
+  }, [user, router, redirectUrl])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +48,7 @@ export default function SignInPage() {
 
       if (result.success) {
         toast.success("Successfully signed in!")
-        router.push("/dashboard")
+        router.push(redirectUrl)
       } else {
         toast.error(result.error || "Failed to sign in. Please check your credentials.")
       }
@@ -119,9 +129,9 @@ export default function SignInPage() {
                     Remember me
                   </Label>
                 </div>
-                <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300">
+                <button type="button" className="text-sm text-blue-400 hover:text-blue-300" onClick={() => toast.info("Password reset feature coming soon!")}>
                   Forgot password?
-                </Link>
+                </button>
               </div>
 
               <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
@@ -143,7 +153,7 @@ export default function SignInPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -164,7 +174,7 @@ export default function SignInPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z" />
                 </svg>
@@ -185,14 +195,7 @@ export default function SignInPage() {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            By signing in, you agree to our{" "}
-            <Link href="/terms" className="text-blue-400 hover:text-blue-300">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy" className="text-blue-400 hover:text-blue-300">
-              Privacy Policy
-            </Link>
+            By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
       </div>

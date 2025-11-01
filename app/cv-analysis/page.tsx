@@ -261,7 +261,7 @@ export default function CVAnalysisPage() {
                       <Button
                         onClick={handleReset}
                         variant="outline"
-                        className="border-gray-600 text-white hover:bg-gray-700"
+                        className="border-gray-600 text-black hover:bg-gray-700"
                       >
                         Cancel
                       </Button>
@@ -576,7 +576,7 @@ export default function CVAnalysisPage() {
               <Button
                 onClick={handleReset}
                 variant="outline"
-                className="border-gray-600 text-white hover:bg-gray-700"
+                className="border-gray-600 text-black hover:bg-gray-700"
               >
                 Upload New CV
               </Button>
@@ -665,7 +665,7 @@ export default function CVAnalysisPage() {
               <Button
                 onClick={handleReset}
                 variant="outline"
-                className="border-gray-600 text-white hover:bg-gray-700"
+                className="border-gray-600 text-black hover:bg-gray-700"
               >
                 Upload New CV
               </Button>
@@ -793,7 +793,7 @@ export default function CVAnalysisPage() {
               <Button
                 onClick={handleReset}
                 variant="outline"
-                className="border-gray-600 text-white hover:bg-gray-700"
+                className="border-gray-600 text-black hover:bg-gray-700"
               >
                 Upload New CV
               </Button>

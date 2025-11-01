@@ -98,7 +98,7 @@ export default function SignUpPage() {
                   className={`${
                     userType === "user"
                       ? "bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-600 text-white hover:bg-gray-700"
+                      : "border-gray-600 text-black hover:bg-gray-700"
                   }`}
                   onClick={() => setUserType("user")}
                 >
@@ -111,7 +111,7 @@ export default function SignUpPage() {
                   className={`${
                     userType === "employer"
                       ? "bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-600 text-white hover:bg-gray-700"
+                      : "border-gray-600 text-black hover:bg-gray-700"
                   }`}
                   onClick={() => setUserType("employer")}
                 >
@@ -278,7 +278,7 @@ export default function SignUpPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -299,7 +299,7 @@ export default function SignUpPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z" />
                 </svg>

@@ -122,7 +122,7 @@ export default function CandidateProfile() {
             <p className="text-gray-400">Manage your professional information and preferences</p>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+            <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
               <Eye className="w-4 h-4 mr-2" />
               Preview Profile
             </Button>
@@ -155,7 +155,7 @@ export default function CandidateProfile() {
                   👨‍💻
                 </div>
                 {isEditing && (
-                  <Button variant="outline" size="sm" className="mb-4 border-gray-600 text-white hover:bg-gray-700">
+                  <Button variant="outline" size="sm" className="mb-4 border-gray-600 text-black hover:bg-gray-700">
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Photo
                   </Button>
@@ -187,7 +187,7 @@ export default function CandidateProfile() {
                 <CardTitle className="flex items-center justify-between">
                   Skills
                   {isEditing && (
-                    <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                    <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                       <Plus className="w-4 h-4" />
                     </Button>
                   )}
@@ -233,12 +233,12 @@ export default function CandidateProfile() {
                   <Upload className="w-4 h-4 mr-2" />
                   Upload New CV
                 </Button>
-                <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-700">
+                <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <Download className="w-4 h-4 mr-2" />
                   Download CV
                 </Button>
                 <Link href="/cv-analysis">
-                  <Button variant="outline" className="w-full border-gray-600 text-white hover:bg-gray-700">
+                  <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                     <Award className="w-4 h-4 mr-2" />
                     Analyze CV
                   </Button>

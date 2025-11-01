@@ -444,11 +444,11 @@ export default function CompaniesPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => toggleFollowCompany(company.id)}
-                          className={followedCompanies.includes(company.id) ? "border-blue-500 text-blue-400" : ""}
+                          className={followedCompanies.includes(company.id) ? "border-blue-500 text-blue-400" : "border-gray-600 text-black hover:bg-gray-700"}
                         >
                           {followedCompanies.includes(company.id) ? "Following" : "Follow"}
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <ExternalLink className="w-4 h-4 mr-1" />
                           Visit Website
                         </Button>
@@ -465,7 +465,7 @@ export default function CompaniesPage() {
 
             {/* Load More */}
             <div className="text-center mt-8">
-              <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
                 Load More Companies
               </Button>
             </div>

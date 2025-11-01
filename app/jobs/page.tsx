@@ -10,6 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Search, MapPin, Clock, DollarSign, Filter, Heart, Share2 } from "lucide-react"
 import Link from "next/link"
 import { apiClient } from "@/lib/api-client"
+import { useAuth } from "@/contexts/auth-context"
+import { useRouter } from "next/navigation"
 
 interface Job {
   id: string
@@ -28,14 +30,25 @@ interface Job {
 }
 
 export default function JobsPage() {
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
   const [savedJobs, setSavedJobs] = useState<string[]>([])
   const [jobs, setJobs] = useState<Job[]>([])
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([])
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
 
   useEffect(() => {
     fetchJobs()
   }, [])
+
+  useEffect(() => {
+    applyFilters()
+  }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedLocations])
 
   const fetchJobs = async () => {
     setLoading(true)
@@ -50,8 +63,69 @@ export default function JobsPage() {
     setLoading(false)
   }
 
+  const applyFilters = () => {
+    let filtered = [...jobs]
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(
+        (job) =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query) ||
+          job.description.toLowerCase().includes(query) ||
+          job.requirements.some((req) => req.toLowerCase().includes(query))
+      )
+    }
+
+    // Job type filter
+    if (selectedJobTypes.length > 0) {
+      filtered = filtered.filter((job) =>
+        selectedJobTypes.some((type) => job.job_type.toLowerCase().includes(type.toLowerCase()))
+      )
+    }
+
+    // Location filter
+    if (selectedLocations.length > 0) {
+      filtered = filtered.filter((job) =>
+        selectedLocations.some((loc) => job.location?.toLowerCase().includes(loc.toLowerCase()))
+      )
+    }
+
+    // Sorting
+    switch (sortBy) {
+      case "newest":
+        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        break
+      case "oldest":
+        filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+        break
+      case "relevance":
+        // For now, sort by applications count as a proxy for relevance
+        filtered.sort((a, b) => b.applications_count - a.applications_count)
+        break
+    }
+
+    setFilteredJobs(filtered)
+  }
+
+  const toggleJobType = (type: string) => {
+    setSelectedJobTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
+  }
+
+  const toggleLocation = (location: string) => {
+    setSelectedLocations((prev) => (prev.includes(location) ? prev.filter((l) => l !== location) : [...prev, location]))
+  }
+
   const toggleSaveJob = (jobId: string) => {
     setSavedJobs((prev) => (prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]))
+  }
+
+  const handleApplyClick = () => {
+    if (!isAuthenticated) {
+      router.push('/auth/signin?redirect=/jobs')
+    }
+    // If authenticated, the link will handle navigation
   }
 
   // COMMENTED OUT: Dummy data - now fetching from database
@@ -168,8 +242,12 @@ export default function JobsPage() {
                     <div className="space-y-2">
                       {["Full-time", "Part-time", "Contract", "Freelance"].map((type) => (
                         <div key={type} className="flex items-center space-x-2">
-                          <Checkbox id={type} />
-                          <label htmlFor={type} className="text-sm text-gray-300">
+                          <Checkbox
+                            id={type}
+                            checked={selectedJobTypes.includes(type)}
+                            onCheckedChange={() => toggleJobType(type)}
+                          />
+                          <label htmlFor={type} className="text-sm text-gray-300 cursor-pointer">
                             {type}
                           </label>
                         </div>
@@ -214,8 +292,12 @@ export default function JobsPage() {
                     <div className="space-y-2">
                       {["Remote", "New York", "San Francisco", "Austin", "Seattle"].map((location) => (
                         <div key={location} className="flex items-center space-x-2">
-                          <Checkbox id={location} />
-                          <label htmlFor={location} className="text-sm text-gray-300">
+                          <Checkbox
+                            id={location}
+                            checked={selectedLocations.includes(location)}
+                            onCheckedChange={() => toggleLocation(location)}
+                          />
+                          <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
                             {location}
                           </label>
                         </div>
@@ -234,16 +316,20 @@ export default function JobsPage() {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input placeholder="Search jobs..." className="pl-10 bg-gray-800 border-gray-700 text-white" />
+                  <Input
+                    placeholder="Search jobs..."
+                    className="pl-10 bg-gray-800 border-gray-700 text-white"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-                <Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="newest">Newest First</SelectItem>
-                    <SelectItem value="salary-high">Salary: High to Low</SelectItem>
-                    <SelectItem value="salary-low">Salary: Low to High</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
                     <SelectItem value="relevance">Most Relevant</SelectItem>
                   </SelectContent>
                 </Select>
@@ -275,16 +361,26 @@ export default function JobsPage() {
             )}
 
             {/* Results Count */}
-            {!loading && !error && jobs.length > 0 && (
+            {!loading && !error && filteredJobs.length > 0 && (
               <div className="mb-6">
-                <p className="text-gray-400">{jobs.length} jobs found</p>
+                <p className="text-gray-400">
+                  {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"} found
+                  {searchQuery && ` for "${searchQuery}"`}
+                </p>
+              </div>
+            )}
+
+            {/* No Results */}
+            {!loading && !error && jobs.length > 0 && filteredJobs.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-400">No jobs match your search criteria. Try adjusting your filters.</p>
               </div>
             )}
 
             {/* Job Cards */}
-            {!loading && !error && (
+            {!loading && !error && filteredJobs.length > 0 && (
               <div className="space-y-6">
-                {jobs.map((job) => (
+                {filteredJobs.map((job) => (
                   <Card key={job.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-4">
@@ -330,7 +426,7 @@ export default function JobsPage() {
                                 <Clock className="w-4 h-4 mr-1" />
                                 {formatDate(job.created_at)}
                               </span>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                                 {job.job_type}
                               </Badge>
                             </div>
@@ -359,12 +455,26 @@ export default function JobsPage() {
                                 </Badge>
                               </div>
                               <div className="flex space-x-2">
-                                <Button variant="outline" size="sm" className="border-gray-600 hover:border-blue-500">
-                                  View Details
-                                </Button>
-                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                                  Apply Now
-                                </Button>
+                                <Link href={`/jobs/${job.id}`}>
+                                  <Button variant="outline" size="sm" className="border-gray-600 text-white hover:border-blue-500 hover:bg-gray-700">
+                                    View Details
+                                  </Button>
+                                </Link>
+                                {isAuthenticated ? (
+                                  <Link href={`/jobs/${job.id}/apply`}>
+                                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                                      Apply Now
+                                    </Button>
+                                  </Link>
+                                ) : (
+                                  <Button
+                                    size="sm"
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                    onClick={() => router.push(`/auth/signin?redirect=/jobs/${job.id}`)}
+                                  >
+                                    Apply Now
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -376,11 +486,19 @@ export default function JobsPage() {
               </div>
             )}
 
-            {/* Load More */}
-            {!loading && !error && jobs.length > 0 && (
+            {/* Clear Filters Button */}
+            {!loading && !error && (selectedJobTypes.length > 0 || selectedLocations.length > 0 || searchQuery) && (
               <div className="text-center mt-8">
-                <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
-                  Load More Jobs
+                <Button
+                  variant="outline"
+                  className="border-gray-600 text-black hover:bg-gray-800"
+                  onClick={() => {
+                    setSearchQuery("")
+                    setSelectedJobTypes([])
+                    setSelectedLocations([])
+                  }}
+                >
+                  Clear All Filters
                 </Button>
               </div>
             )}

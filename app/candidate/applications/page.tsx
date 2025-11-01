@@ -243,15 +243,15 @@ export default function CandidateApplications() {
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <Eye className="w-4 h-4 mr-1" />
                           View Job
                         </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <MessageSquare className="w-4 h-4 mr-1" />
                           Message
                         </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                           <Download className="w-4 h-4 mr-1" />
                           Download
                         </Button>

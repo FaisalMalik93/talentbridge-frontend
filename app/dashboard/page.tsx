@@ -203,7 +203,7 @@ export default function EmployerDashboard() {
                           </span>
                         </div>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                             View Applicants
                           </Button>
                           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
@@ -260,7 +260,7 @@ export default function EmployerDashboard() {
                           ))}
                         </div>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
                             View Profile
                           </Button>
                           <Button size="sm" className="bg-green-600 hover:bg-green-700">
