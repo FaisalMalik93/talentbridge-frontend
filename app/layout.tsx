@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "TalentBridge - AI-Powered Job Matching Platform",
   description:
     "Connect with top companies and find your perfect remote position. Our AI-powered platform matches your skills with the right opportunities.",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <AuthProvider>
           {children}
           <Toaster position="top-right" />

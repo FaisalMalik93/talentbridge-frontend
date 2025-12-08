@@ -10,7 +10,7 @@ export interface Candidate {
   name: string;
   email: string;
   title: string;
-  experience: string;
+  experience: any;
   education: any;
   skills: string[];
   overall_score: number;

@@ -151,7 +151,7 @@ export default function CandidatesPage() {
       <div className="grid lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
-          <Card className="bg-gray-800 border-gray-700 sticky top-24">
+          <Card className="bg-gray-800 border-gray-700 sticky top-24 text-white">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2 mb-6">
                 <Filter className="w-5 h-5" />

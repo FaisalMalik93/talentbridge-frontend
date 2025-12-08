@@ -225,285 +225,285 @@ export default function JobsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="bg-gray-800 border-gray-700 sticky top-8">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-2 mb-6">
-                  <Filter className="w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Filters</h2>
-                </div>
+      <div className="grid lg:grid-cols-4 gap-8">
+        {/* Filters Sidebar */}
+        <div className="lg:col-span-1">
+          <Card className="bg-gray-800 border-gray-700 sticky top-8 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-6">
+                <Filter className="w-5 h-5" />
+                <h2 className="text-lg font-semibold">Filters</h2>
+              </div>
 
-                <div className="space-y-6">
-                  {/* Job Type */}
-                  <div>
-                    <h3 className="font-medium mb-3">Job Type</h3>
-                    <div className="space-y-2">
-                      {["Full-time", "Part-time", "Contract", "Freelance"].map((type) => (
-                        <div key={type} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={type}
-                            checked={selectedJobTypes.includes(type)}
-                            onCheckedChange={() => toggleJobType(type)}
-                          />
-                          <label htmlFor={type} className="text-sm text-gray-300 cursor-pointer">
-                            {type}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Experience Level */}
-                  <div>
-                    <h3 className="font-medium mb-3">Experience Level</h3>
-                    <div className="space-y-2">
-                      {["Entry Level", "Mid Level", "Senior Level", "Executive"].map((level) => (
-                        <div key={level} className="flex items-center space-x-2">
-                          <Checkbox id={level} />
-                          <label htmlFor={level} className="text-sm text-gray-300">
-                            {level}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Salary Range */}
-                  <div>
-                    <h3 className="font-medium mb-3">Salary Range</h3>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0-50k">$0 - $50k</SelectItem>
-                        <SelectItem value="50k-100k">$50k - $100k</SelectItem>
-                        <SelectItem value="100k-150k">$100k - $150k</SelectItem>
-                        <SelectItem value="150k+">$150k+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Location */}
-                  <div>
-                    <h3 className="font-medium mb-3">Location</h3>
-                    <div className="space-y-2">
-                      {["Remote", "New York", "San Francisco", "Austin", "Seattle"].map((location) => (
-                        <div key={location} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={location}
-                            checked={selectedLocations.includes(location)}
-                            onCheckedChange={() => toggleLocation(location)}
-                          />
-                          <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
-                            {location}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+              <div className="space-y-6">
+                {/* Job Type */}
+                <div>
+                  <h3 className="font-medium mb-3">Job Type</h3>
+                  <div className="space-y-2">
+                    {["Full-time", "Part-time", "Contract", "Freelance"].map((type) => (
+                      <div key={type} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={type}
+                          checked={selectedJobTypes.includes(type)}
+                          onCheckedChange={() => toggleJobType(type)}
+                        />
+                        <label htmlFor={type} className="text-sm text-gray-300 cursor-pointer">
+                          {type}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* Experience Level */}
+                <div>
+                  <h3 className="font-medium mb-3">Experience Level</h3>
+                  <div className="space-y-2">
+                    {["Entry Level", "Mid Level", "Senior Level", "Executive"].map((level) => (
+                      <div key={level} className="flex items-center space-x-2">
+                        <Checkbox id={level} />
+                        <label htmlFor={level} className="text-sm text-gray-300">
+                          {level}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Salary Range */}
+                <div>
+                  <h3 className="font-medium mb-3">Salary Range</h3>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0-50k">$0 - $50k</SelectItem>
+                      <SelectItem value="50k-100k">$50k - $100k</SelectItem>
+                      <SelectItem value="100k-150k">$100k - $150k</SelectItem>
+                      <SelectItem value="150k+">$150k+</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <h3 className="font-medium mb-3">Location</h3>
+                  <div className="space-y-2">
+                    {["Remote", "New York", "San Francisco", "Austin", "Seattle"].map((location) => (
+                      <div key={location} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={location}
+                          checked={selectedLocations.includes(location)}
+                          onCheckedChange={() => toggleLocation(location)}
+                        />
+                        <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
+                          {location}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Job Listings */}
+        <div className="lg:col-span-3">
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="Search jobs..."
+                  className="pl-10 bg-gray-800 border-gray-700 text-white"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="relevance">Most Relevant</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Job Listings */}
-          <div className="lg:col-span-3">
-            {/* Search Bar */}
-            <div className="mb-8">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input
-                    placeholder="Search jobs..."
-                    className="pl-10 bg-gray-800 border-gray-700 text-white"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Newest First</SelectItem>
-                    <SelectItem value="oldest">Oldest First</SelectItem>
-                    <SelectItem value="relevance">Most Relevant</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <p className="text-gray-400">Loading jobs...</p>
             </div>
+          )}
 
-            {/* Loading State */}
-            {loading && (
-              <div className="text-center py-12">
-                <p className="text-gray-400">Loading jobs...</p>
-              </div>
-            )}
+          {/* Error State */}
+          {error && (
+            <div className="bg-red-900/20 border border-red-500 rounded-lg p-4 mb-6">
+              <p className="text-red-400">Error loading jobs: {error}</p>
+              <Button onClick={fetchJobs} className="mt-2" variant="outline">
+                Retry
+              </Button>
+            </div>
+          )}
 
-            {/* Error State */}
-            {error && (
-              <div className="bg-red-900/20 border border-red-500 rounded-lg p-4 mb-6">
-                <p className="text-red-400">Error loading jobs: {error}</p>
-                <Button onClick={fetchJobs} className="mt-2" variant="outline">
-                  Retry
-                </Button>
-              </div>
-            )}
+          {/* Empty State */}
+          {!loading && !error && jobs.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No jobs available at the moment.</p>
+            </div>
+          )}
 
-            {/* Empty State */}
-            {!loading && !error && jobs.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-400">No jobs available at the moment.</p>
-              </div>
-            )}
+          {/* Results Count */}
+          {!loading && !error && filteredJobs.length > 0 && (
+            <div className="mb-6">
+              <p className="text-gray-400">
+                {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"} found
+                {searchQuery && ` for "${searchQuery}"`}
+              </p>
+            </div>
+          )}
 
-            {/* Results Count */}
-            {!loading && !error && filteredJobs.length > 0 && (
-              <div className="mb-6">
-                <p className="text-gray-400">
-                  {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"} found
-                  {searchQuery && ` for "${searchQuery}"`}
-                </p>
-              </div>
-            )}
+          {/* No Results */}
+          {!loading && !error && jobs.length > 0 && filteredJobs.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No jobs match your search criteria. Try adjusting your filters.</p>
+            </div>
+          )}
 
-            {/* No Results */}
-            {!loading && !error && jobs.length > 0 && filteredJobs.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-400">No jobs match your search criteria. Try adjusting your filters.</p>
-              </div>
-            )}
-
-            {/* Job Cards */}
-            {!loading && !error && filteredJobs.length > 0 && (
-              <div className="space-y-6">
-                {filteredJobs.map((job) => (
-                  <Card key={job.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start space-x-4 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
-                            💼
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <div className="flex-1">
-                                <h3 className="text-xl font-semibold text-white mb-1">{job.title}</h3>
-                                <p className="text-blue-400 font-medium">{job.company}</p>
-                              </div>
-                              <div className="flex items-center space-x-2 flex-shrink-0">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => toggleSaveJob(job.id)}
-                                  className={savedJobs.includes(job.id) ? "text-red-400" : "text-gray-400"}
-                                >
-                                  <Heart className={`w-5 h-5 ${savedJobs.includes(job.id) ? "fill-current" : ""}`} />
-                                </Button>
-                                <Button variant="ghost" size="sm" className="text-gray-400">
-                                  <Share2 className="w-5 h-5" />
-                                </Button>
-                              </div>
+          {/* Job Cards */}
+          {!loading && !error && filteredJobs.length > 0 && (
+            <div className="space-y-6">
+              {filteredJobs.map((job) => (
+                <Card key={job.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start space-x-4 flex-1">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+                          💼
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div className="flex-1">
+                              <h3 className="text-xl font-semibold text-white mb-1">{job.title}</h3>
+                              <p className="text-blue-400 font-medium">{job.company}</p>
                             </div>
+                            <div className="flex items-center space-x-2 flex-shrink-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleSaveJob(job.id)}
+                                className={savedJobs.includes(job.id) ? "text-red-400" : "text-gray-400"}
+                              >
+                                <Heart className={`w-5 h-5 ${savedJobs.includes(job.id) ? "fill-current" : ""}`} />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-gray-400">
+                                <Share2 className="w-5 h-5" />
+                              </Button>
+                            </div>
+                          </div>
 
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 mb-3">
-                              {job.location && (
-                                <span className="flex items-center">
-                                  <MapPin className="w-4 h-4 mr-1" />
-                                  {job.location}
-                                </span>
-                              )}
-                              {job.salary_range && (
-                                <span className="flex items-center">
-                                  <DollarSign className="w-4 h-4 mr-1" />
-                                  {job.salary_range}
-                                </span>
-                              )}
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 mb-3">
+                            {job.location && (
                               <span className="flex items-center">
-                                <Clock className="w-4 h-4 mr-1" />
-                                {formatDate(job.created_at)}
+                                <MapPin className="w-4 h-4 mr-1" />
+                                {job.location}
                               </span>
-                              <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
-                                {job.job_type}
+                            )}
+                            {job.salary_range && (
+                              <span className="flex items-center">
+                                <DollarSign className="w-4 h-4 mr-1" />
+                                {job.salary_range}
+                              </span>
+                            )}
+                            <span className="flex items-center">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {formatDate(job.created_at)}
+                            </span>
+                            <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
+                              {job.job_type}
+                            </Badge>
+                          </div>
+
+                          <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                            {truncateText(job.description, 200)}
+                          </p>
+
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {job.requirements.slice(0, 6).map((requirement, index) => (
+                              <Badge key={index} variant="secondary" className="bg-blue-600/20 text-blue-300 text-xs">
+                                {requirement}
+                              </Badge>
+                            ))}
+                            {job.requirements.length > 6 && (
+                              <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">
+                                +{job.requirements.length - 6} more
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-700">
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline" className="text-xs text-gray-400 border-gray-600">
+                                {job.applications_count} applicants
                               </Badge>
                             </div>
-
-                            <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                              {truncateText(job.description, 200)}
-                            </p>
-
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              {job.requirements.slice(0, 6).map((requirement, index) => (
-                                <Badge key={index} variant="secondary" className="bg-blue-600/20 text-blue-300 text-xs">
-                                  {requirement}
-                                </Badge>
-                              ))}
-                              {job.requirements.length > 6 && (
-                                <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">
-                                  +{job.requirements.length - 6} more
-                                </Badge>
-                              )}
-                            </div>
-
-                            <div className="flex items-center justify-between pt-3 border-t border-gray-700">
-                              <div className="flex items-center space-x-2">
-                                <Badge variant="outline" className="text-xs text-gray-400 border-gray-600">
-                                  {job.applications_count} applicants
-                                </Badge>
-                              </div>
-                              <div className="flex space-x-2">
-                                <Link href={`/jobs/${job.id}`}>
-                                  <Button variant="outline" size="sm" className="border-gray-600 text-white hover:border-blue-500 hover:bg-gray-700">
-                                    View Details
-                                  </Button>
-                                </Link>
-                                {isAuthenticated ? (
-                                  <Link href={`/jobs/${job.id}/apply`}>
-                                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                                      Apply Now
-                                    </Button>
-                                  </Link>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    className="bg-blue-600 hover:bg-blue-700"
-                                    onClick={() => router.push(`/auth/signin?redirect=/jobs/${job.id}`)}
-                                  >
+                            <div className="flex space-x-2">
+                              <Link href={`/jobs/${job.id}`}>
+                                <Button variant="outline" size="sm" className="border-gray-600 text-black hover:border-blue-500 hover:bg-gray-700">
+                                  View Details
+                                </Button>
+                              </Link>
+                              {isAuthenticated ? (
+                                <Link href={`/jobs/${job.id}/apply`}>
+                                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                                     Apply Now
                                   </Button>
-                                )}
-                              </div>
+                                </Link>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  className="bg-blue-600 hover:bg-blue-700"
+                                  onClick={() => router.push(`/auth/signin?redirect=/jobs/${job.id}`)}
+                                >
+                                  Apply Now
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
-            {/* Clear Filters Button */}
-            {!loading && !error && (selectedJobTypes.length > 0 || selectedLocations.length > 0 || searchQuery) && (
-              <div className="text-center mt-8">
-                <Button
-                  variant="outline"
-                  className="border-gray-600 text-black hover:bg-gray-800"
-                  onClick={() => {
-                    setSearchQuery("")
-                    setSelectedJobTypes([])
-                    setSelectedLocations([])
-                  }}
-                >
-                  Clear All Filters
-                </Button>
-              </div>
-            )}
-          </div>
+          {/* Clear Filters Button */}
+          {!loading && !error && (selectedJobTypes.length > 0 || selectedLocations.length > 0 || searchQuery) && (
+            <div className="text-center mt-8">
+              <Button
+                variant="outline"
+                className="border-gray-600 text-black hover:bg-gray-800"
+                onClick={() => {
+                  setSearchQuery("")
+                  setSelectedJobTypes([])
+                  setSelectedLocations([])
+                }}
+              >
+                Clear All Filters
+              </Button>
+            </div>
+          )}
         </div>
       </div>
+    </div>
   )
 }

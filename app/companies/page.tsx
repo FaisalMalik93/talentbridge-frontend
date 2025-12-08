@@ -214,157 +214,157 @@ export default function CompaniesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 text-white">
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Discover Amazing Companies</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Explore top companies, learn about their culture, and find your perfect workplace match
-          </p>
+      {/* Page Header */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">Discover Amazing Companies</h1>
+        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          Explore top companies, learn about their culture, and find your perfect workplace match
+        </p>
+      </div>
+
+      <div className="grid lg:grid-cols-4 gap-8">
+        {/* Filters Sidebar */}
+        <div className="lg:col-span-1">
+          <Card className="bg-gray-800 border-gray-700 sticky top-8 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-6">
+                <Filter className="w-5 h-5" />
+                <h2 className="text-lg font-semibold">Filters</h2>
+              </div>
+
+              <div className="space-y-6">
+                {/* Industry */}
+                <div>
+                  <h3 className="font-medium mb-3">Industry</h3>
+                  <div className="space-y-2">
+                    {["Technology", "Software Solutions", "AI/ML", "ERP Solutions", "PropTech", "AI Technology", "Mobile Solutions"].map((industry) => (
+                      <div key={industry} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={industry}
+                          checked={selectedIndustries.includes(industry)}
+                          onCheckedChange={() => toggleFilter(industry, selectedIndustries, setSelectedIndustries)}
+                        />
+                        <label htmlFor={industry} className="text-sm text-gray-300 cursor-pointer">
+                          {industry}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Company Size */}
+                <div>
+                  <h3 className="font-medium mb-3">Company Size</h3>
+                  <div className="space-y-2">
+                    {["1-10", "11-50", "51-200", "201-1000", "1000+"].map((size) => (
+                      <div key={size} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={size}
+                          checked={selectedSizes.includes(size)}
+                          onCheckedChange={() => toggleFilter(size, selectedSizes, setSelectedSizes)}
+                        />
+                        <label htmlFor={size} className="text-sm text-gray-300 cursor-pointer">
+                          {size} employees
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <h3 className="font-medium mb-3">Location</h3>
+                  <div className="space-y-2">
+                    {["Remote", "Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad"].map((location) => (
+                      <div key={location} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={location}
+                          checked={selectedLocations.includes(location)}
+                          onCheckedChange={() => toggleFilter(location, selectedLocations, setSelectedLocations)}
+                        />
+                        <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
+                          {location}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <div>
+                  <h3 className="font-medium mb-3">Rating</h3>
+                  <Select value={minRating?.toString() || ""} onValueChange={(value) => setMinRating(value ? parseFloat(value) : null)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Minimum rating" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="4.5">4.5+ stars</SelectItem>
+                      <SelectItem value="4.0">4.0+ stars</SelectItem>
+                      <SelectItem value="3.5">3.5+ stars</SelectItem>
+                      <SelectItem value="3.0">3.0+ stars</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="bg-gray-800 border-gray-700 sticky top-8">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-2 mb-6">
-                  <Filter className="w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Filters</h2>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Industry */}
-                  <div>
-                    <h3 className="font-medium mb-3">Industry</h3>
-                    <div className="space-y-2">
-                      {["Technology", "Software Solutions", "AI/ML", "ERP Solutions", "PropTech", "AI Technology", "Mobile Solutions"].map((industry) => (
-                        <div key={industry} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={industry}
-                            checked={selectedIndustries.includes(industry)}
-                            onCheckedChange={() => toggleFilter(industry, selectedIndustries, setSelectedIndustries)}
-                          />
-                          <label htmlFor={industry} className="text-sm text-gray-300 cursor-pointer">
-                            {industry}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Company Size */}
-                  <div>
-                    <h3 className="font-medium mb-3">Company Size</h3>
-                    <div className="space-y-2">
-                      {["1-10", "11-50", "51-200", "201-1000", "1000+"].map((size) => (
-                        <div key={size} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={size}
-                            checked={selectedSizes.includes(size)}
-                            onCheckedChange={() => toggleFilter(size, selectedSizes, setSelectedSizes)}
-                          />
-                          <label htmlFor={size} className="text-sm text-gray-300 cursor-pointer">
-                            {size} employees
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div>
-                    <h3 className="font-medium mb-3">Location</h3>
-                    <div className="space-y-2">
-                      {["Remote", "Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad"].map((location) => (
-                        <div key={location} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={location}
-                            checked={selectedLocations.includes(location)}
-                            onCheckedChange={() => toggleFilter(location, selectedLocations, setSelectedLocations)}
-                          />
-                          <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
-                            {location}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Rating */}
-                  <div>
-                    <h3 className="font-medium mb-3">Rating</h3>
-                    <Select value={minRating?.toString() || ""} onValueChange={(value) => setMinRating(value ? parseFloat(value) : null)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Minimum rating" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="4.5">4.5+ stars</SelectItem>
-                        <SelectItem value="4.0">4.0+ stars</SelectItem>
-                        <SelectItem value="3.5">3.5+ stars</SelectItem>
-                        <SelectItem value="3.0">3.0+ stars</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Company Listings */}
+        <div className="lg:col-span-3">
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="Search companies..."
+                  className="pl-10 bg-gray-800 border-gray-700 text-white"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rating">Highest Rated</SelectItem>
+                  <SelectItem value="jobs">Most Jobs</SelectItem>
+                  <SelectItem value="size">Company Size</SelectItem>
+                  <SelectItem value="name">Company Name</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Company Listings */}
-          <div className="lg:col-span-3">
-            {/* Search Bar */}
-            <div className="mb-8">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input
-                    placeholder="Search companies..."
-                    className="pl-10 bg-gray-800 border-gray-700 text-white"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="rating">Highest Rated</SelectItem>
-                    <SelectItem value="jobs">Most Jobs</SelectItem>
-                    <SelectItem value="size">Company Size</SelectItem>
-                    <SelectItem value="name">Company Name</SelectItem>
-                  </SelectContent>
-                </Select>
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-400">{filteredAndSortedCompanies.length} companies found</p>
+          </div>
+
+          {/* Company Cards */}
+          <div className="space-y-6">
+            {filteredAndSortedCompanies.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-400 text-lg">No companies found matching your criteria.</p>
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchQuery("")
+                    setSelectedIndustries([])
+                    setSelectedSizes([])
+                    setSelectedLocations([])
+                    setMinRating(null)
+                    setSortBy("")
+                  }}
+                >
+                  Clear all filters
+                </Button>
               </div>
-            </div>
-
-            {/* Results Count */}
-            <div className="mb-6">
-              <p className="text-gray-400">{filteredAndSortedCompanies.length} companies found</p>
-            </div>
-
-            {/* Company Cards */}
-            <div className="space-y-6">
-              {filteredAndSortedCompanies.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-gray-400 text-lg">No companies found matching your criteria.</p>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => {
-                      setSearchQuery("")
-                      setSelectedIndustries([])
-                      setSelectedSizes([])
-                      setSelectedLocations([])
-                      setMinRating(null)
-                      setSortBy("")
-                    }}
-                  >
-                    Clear all filters
-                  </Button>
-                </div>
-              ) : (
-                filteredAndSortedCompanies.map((company) => (
+            ) : (
+              filteredAndSortedCompanies.map((company) => (
                 <Card key={company.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -460,17 +460,17 @@ export default function CompaniesPage() {
                   </CardContent>
                 </Card>
               ))
-              )}
-            </div>
+            )}
+          </div>
 
-            {/* Load More */}
-            <div className="text-center mt-8">
-              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
-                Load More Companies
-              </Button>
-            </div>
+          {/* Load More */}
+          <div className="text-center mt-8">
+            <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
+              Load More Companies
+            </Button>
           </div>
         </div>
       </div>
+    </div>
   )
 }
