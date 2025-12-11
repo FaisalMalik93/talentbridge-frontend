@@ -21,7 +21,8 @@ import {
   PlusCircle,
   Home,
   Search,
-  Building
+  Building,
+  LayoutDashboard
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -63,6 +64,17 @@ export function Header() {
             <Home className="w-4 h-4" />
             Home
           </Link>
+
+          {/* Employer Dashboard (Moved here) */}
+          {isAuthenticated && user?.role === 'employer' && (
+            <Link
+              href="/dashboard"
+              className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
+            </Link>
+          )}
 
           <Link
             href="/jobs"
@@ -109,13 +121,7 @@ export function Header() {
                 <PlusCircle className="w-4 h-4" />
                 Post Job
               </Link>
-              <Link
-                href="/dashboard"
-                className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2"
-              >
-                <TrendingUp className="w-4 h-4" />
-                Dashboard
-              </Link>
+
               <Link
                 href="/candidates"
                 className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2"

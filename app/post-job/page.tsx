@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Plus, X, MapPin, DollarSign, Clock, Building, Briefcase } from "lucide-react"
 import { jobsService } from "@/lib/services/jobs.service"
 import { toast } from "sonner"
+import { DEPARTMENTS, COUNTRIES, CURRENCIES, JOB_TYPES, EXPERIENCE_LEVELS, WORK_MODES } from "@/lib/constants"
 
 export default function PostJobPage() {
   const router = useRouter()
@@ -99,7 +100,8 @@ export default function PostJobPage() {
     // Build salary range
     let salary_range = ""
     if (formData.min_salary && formData.max_salary) {
-      const currencySymbol = formData.currency === "usd" ? "$" : formData.currency === "eur" ? "€" : formData.currency === "gbp" ? "£" : "C$"
+      const selectedCurrency = CURRENCIES.find(c => c.code.toLowerCase() === formData.currency)
+      const currencySymbol = selectedCurrency ? selectedCurrency.symbol : "$"
       salary_range = `${currencySymbol}${formData.min_salary} - ${currencySymbol}${formData.max_salary}`
     }
 
@@ -198,13 +200,12 @@ export default function PostJobPage() {
                     <SelectTrigger className="bg-gray-700 border-gray-600 mt-2">
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="engineering">Engineering</SelectItem>
-                      <SelectItem value="design">Design</SelectItem>
-                      <SelectItem value="product">Product</SelectItem>
-                      <SelectItem value="marketing">Marketing</SelectItem>
-                      <SelectItem value="sales">Sales</SelectItem>
-                      <SelectItem value="hr">Human Resources</SelectItem>
+                    <SelectContent className="max-h-[200px]">
+                      {DEPARTMENTS.map((dept) => (
+                        <SelectItem key={dept} value={dept.toLowerCase()}>
+                          {dept}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -216,11 +217,11 @@ export default function PostJobPage() {
                       <SelectValue placeholder="Select job type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Full-time">Full-time</SelectItem>
-                      <SelectItem value="Part-time">Part-time</SelectItem>
-                      <SelectItem value="Contract">Contract</SelectItem>
-                      <SelectItem value="Freelance">Freelance</SelectItem>
-                      <SelectItem value="Internship">Internship</SelectItem>
+                      {JOB_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -234,11 +235,11 @@ export default function PostJobPage() {
                       <SelectValue placeholder="Select experience level" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
-                      <SelectItem value="mid">Mid Level (2-5 years)</SelectItem>
-                      <SelectItem value="senior">Senior Level (5+ years)</SelectItem>
-                      <SelectItem value="lead">Lead/Principal (8+ years)</SelectItem>
-                      <SelectItem value="executive">Executive</SelectItem>
+                      {EXPERIENCE_LEVELS.map((level) => (
+                        <SelectItem key={level.value} value={level.value}>
+                          {level.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -250,9 +251,11 @@ export default function PostJobPage() {
                       <SelectValue placeholder="Select work mode" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="remote">Remote</SelectItem>
-                      <SelectItem value="onsite">On-site</SelectItem>
-                      <SelectItem value="hybrid">Hybrid</SelectItem>
+                      {WORK_MODES.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value}>
+                          {mode.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -276,12 +279,12 @@ export default function PostJobPage() {
                     <SelectTrigger className="bg-gray-700 border-gray-600 mt-2">
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="United States">United States</SelectItem>
-                      <SelectItem value="Canada">Canada</SelectItem>
-                      <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                      <SelectItem value="Germany">Germany</SelectItem>
-                      <SelectItem value="Australia">Australia</SelectItem>
+                    <SelectContent className="max-h-[200px]">
+                      {COUNTRIES.map((country) => (
+                        <SelectItem key={country} value={country}>
+                          {country}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -305,11 +308,12 @@ export default function PostJobPage() {
                     <SelectTrigger className="bg-gray-700 border-gray-600 mt-2">
                       <SelectValue placeholder="Currency" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="usd">USD ($)</SelectItem>
-                      <SelectItem value="eur">EUR (€)</SelectItem>
-                      <SelectItem value="gbp">GBP (£)</SelectItem>
-                      <SelectItem value="cad">CAD (C$)</SelectItem>
+                    <SelectContent className="max-h-[200px]">
+                      {CURRENCIES.map((curr) => (
+                        <SelectItem key={curr.code} value={curr.code.toLowerCase()}>
+                          {curr.code} ({curr.symbol})
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -472,12 +476,23 @@ export default function PostJobPage() {
                   <span className="text-white">{formData.city || formData.country || "Location"}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
-                  <DollarSign className="w-4 h-4 text-gray-400" />
-                  <span className="text-white">
-                    {formData.min_salary && formData.max_salary
-                      ? `${formData.min_salary} - ${formData.max_salary}`
-                      : "Salary range"}
-                  </span>
+                  {(() => {
+                    const selectedCurrency = CURRENCIES.find(c => c.code.toLowerCase() === formData.currency);
+                    const symbol = selectedCurrency ? selectedCurrency.symbol : "$";
+
+                    return (
+                      <>
+                        <div className="w-4 h-4 flex items-center justify-center text-gray-400 font-semibold shrink-0">
+                          {symbol}
+                        </div>
+                        <span className="text-white">
+                          {formData.min_salary && formData.max_salary
+                            ? `${formData.min_salary} - ${formData.max_salary}`
+                            : "Salary range"}
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
                   <Clock className="w-4 h-4 text-gray-400" />
