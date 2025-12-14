@@ -21,6 +21,7 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const [userType, setUserType] = useState<"user" | "employer">("user")
   const [formData, setFormData] = useState({
     firstName: "",
@@ -57,8 +58,8 @@ export default function SignUpPage() {
       })
 
       if (result.success) {
-        toast.success("Account created successfully!")
-        router.push("/dashboard")
+        toast.success("Account created! Please check your email.")
+        setIsSuccess(true) // Show success message
       } else {
         toast.error(result.error || "Failed to create account. Please try again.")
       }
@@ -67,6 +68,32 @@ export default function SignUpPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4 py-8">
+        <Card className="bg-gray-800 border-gray-700 max-w-md w-full">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8" />
+            </div>
+            <CardTitle className="text-2xl">Check Your Email</CardTitle>
+            <p className="text-gray-400 mt-2">
+              We've sent a verification link to <strong>{formData.email}</strong>.
+              Please check your inbox (and spam folder) to activate your account.
+            </p>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <Link href="/auth/signin">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                Back to Sign In
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -95,11 +122,10 @@ export default function SignUpPage() {
                 <Button
                   type="button"
                   variant={userType === "user" ? "default" : "outline"}
-                  className={`${
-                    userType === "user"
-                      ? "bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-600 text-black hover:bg-gray-700"
-                  }`}
+                  className={`${userType === "user"
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "border-gray-600 text-black hover:bg-gray-700"
+                    }`}
                   onClick={() => setUserType("user")}
                 >
                   <User className="w-4 h-4 mr-2" />
@@ -108,11 +134,10 @@ export default function SignUpPage() {
                 <Button
                   type="button"
                   variant={userType === "employer" ? "default" : "outline"}
-                  className={`${
-                    userType === "employer"
-                      ? "bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-600 text-black hover:bg-gray-700"
-                  }`}
+                  className={`${userType === "employer"
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "border-gray-600 text-black hover:bg-gray-700"
+                    }`}
                   onClick={() => setUserType("employer")}
                 >
                   <Building className="w-4 h-4 mr-2" />
@@ -244,6 +269,7 @@ export default function SignUpPage() {
                     <Link href="/privacy" className="text-blue-400 hover:text-blue-300">
                       Privacy Policy
                     </Link>
+                    <span className="text-red-500 ml-1">*</span>
                   </Label>
                 </div>
                 <div className="flex items-start space-x-2">
@@ -278,7 +304,7 @@ export default function SignUpPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
+              <Button variant="outline" className="bg-transparent border-gray-600 text-white hover:bg-gray-800" onClick={() => toast.info("Google login integration coming soon")}>
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -299,7 +325,7 @@ export default function SignUpPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
+              <Button variant="outline" className="bg-transparent border-gray-600 text-white hover:bg-gray-800" onClick={() => toast.info("Facebook login integration coming soon")}>
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z" />
                 </svg>

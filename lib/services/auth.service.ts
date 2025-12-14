@@ -11,13 +11,7 @@ class AuthService {
    * Register a new user
    */
   async register(data: RegisterRequest) {
-    const response = await apiClient.post<AuthResponse>('/api/auth/register', data, false);
-
-    if (response.data) {
-      this.setToken(response.data.access_token);
-      this.setUser(response.data.user);
-    }
-
+    const response = await apiClient.post<any>('/api/auth/register', data, false);
     return response;
   }
 

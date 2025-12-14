@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const response = await authService.register(data);
 
     if (response.data) {
-      setUser(response.data.user);
+      // Don't log in automatically. Wait for verification.
       return { success: true };
     }
 

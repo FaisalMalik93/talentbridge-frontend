@@ -67,8 +67,22 @@ class ApiClient {
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
+        let errorMessage = `HTTP error! status: ${response.status}`;
+
+        if (data?.detail) {
+          if (Array.isArray(data.detail)) {
+            // Handle Pydantic validation errors (array of objects)
+            errorMessage = data.detail.map((err: any) => err.msg).join(', ');
+          } else if (typeof data.detail === 'string') {
+            // Handle standard FastAPI HTTPException (string)
+            errorMessage = data.detail;
+          } else {
+            errorMessage = JSON.stringify(data.detail);
+          }
+        }
+
         return {
-          error: data?.detail || `HTTP error! status: ${response.status}`,
+          error: errorMessage,
           status: response.status,
         };
       }
