@@ -103,10 +103,14 @@ export default function AboutPage() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-white hover:text-blue-400">
-              Sign In
-            </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">For Employers</Button>
+            <Link href="/auth/signin">
+              <Button variant="ghost" className="text-white hover:text-blue-400">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/post-job">
+              <Button className="bg-blue-600 hover:bg-blue-700">For Employers</Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -122,12 +126,16 @@ export default function AboutPage() {
             faster, and more fair for everyone involved.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Get Started Today
-            </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
-              Learn More
-            </Button>
+            <Link href="/auth/signup">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Get Started Today
+              </Button>
+            </Link>
+            <Link href="#mission">
+              <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -150,7 +158,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16">
+      <section id="mission" className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8">Our Mission</h2>
@@ -161,42 +169,33 @@ export default function AboutPage() {
             </p>
 
             <div className="grid md:grid-cols-2 gap-12 text-left">
-              <div>
-                <h3 className="text-2xl font-bold mb-4 text-blue-400">For Job Seekers</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Get personalized CV feedback and improvement suggestions</span>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Discover jobs that match your skills and experience</span>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Increase your chances of getting hired by 30%</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold mb-4 text-blue-400">For Employers</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Reduce HR workload by 40% through automation</span>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Find the best candidates faster with AI ranking</span>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">Make data-driven hiring decisions</span>
-                  </li>
-                </ul>
-              </div>
+              {/* ... content ... */}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ... Features, Team, Timeline, Technology Sections ... */}
+
+      {/* CTA Section */}
+      <section className="py-16 bg-blue-600/10">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Career?</h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Join thousands of professionals who have found their dream jobs through TalentBridge
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/jobs">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Start Your Journey
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            <Link href="/post-job">
+              <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
+                For Employers
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -318,13 +317,17 @@ export default function AboutPage() {
             Join thousands of professionals who have found their dream jobs through TalentBridge
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Start Your Journey
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
-              For Employers
-            </Button>
+            <Link href="/jobs">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Start Your Journey
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            <Link href="/post-job">
+              <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-700">
+                For Employers
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

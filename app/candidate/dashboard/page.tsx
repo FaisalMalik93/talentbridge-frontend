@@ -208,9 +208,11 @@ export default function CandidateDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <Progress value={profileCompletion} className="w-32" />
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                Complete Profile
-              </Button>
+              <Link href="/candidate/profile">
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  Complete Profile
+                </Button>
+              </Link>
             </div>
           </div>
         </CardContent>
@@ -218,18 +220,18 @@ export default function CandidateDashboard() {
 
       {/* Stats Cards */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
-                  <span className="text-sm text-green-400 font-semibold">{stat.change}</span>
-                </div>
-                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                <p className="text-gray-400 text-sm">{stat.title}</p>
-              </CardContent>
-            </Card>
-          ))}
+        {stats.map((stat, index) => (
+          <Card key={index} className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                <span className="text-sm text-green-400 font-semibold">{stat.change}</span>
+              </div>
+              <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+              <p className="text-gray-400 text-sm">{stat.title}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Main Content */}
@@ -238,206 +240,214 @@ export default function CandidateDashboard() {
         <div className="lg:col-span-2 space-y-8">
           {/* Recent Applications */}
           <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Recent Applications
-                  <Link href="/candidate/applications">
-                    <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
-                      View All
-                    </Button>
-                  </Link>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentApplications.map((application) => (
-                    <div key={application.id} className="border border-gray-700 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
-                            {application.logo}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-white">{application.jobTitle}</h3>
-                            <p className="text-blue-400 text-sm">{application.company}</p>
-                          </div>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Recent Applications
+                <Link href="/candidate/applications">
+                  <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                    View All
+                  </Button>
+                </Link>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentApplications.map((application) => (
+                  <div key={application.id} className="border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
+                          {application.logo}
                         </div>
-                        <Badge className={getStatusColor(application.status)}>{application.status}</Badge>
+                        <div>
+                          <h3 className="font-semibold text-white">{application.jobTitle}</h3>
+                          <p className="text-blue-400 text-sm">{application.company}</p>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between text-sm text-gray-400">
-                        <div className="flex items-center space-x-4">
-                          <span className="flex items-center">
-                            <MapPin className="w-4 h-4 mr-1" />
-                            {application.location}
-                          </span>
-                          <span className="flex items-center">
-                            <DollarSign className="w-4 h-4 mr-1" />
-                            {application.salary}
-                          </span>
+                      <Badge className={getStatusColor(application.status)}>{application.status}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-400">
+                      <div className="flex items-center space-x-4">
+                        <span className="flex items-center">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {application.location}
+                        </span>
+                        <span className="flex items-center">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          {application.salary}
+                        </span>
+                      </div>
+                      <span>Applied {new Date(application.appliedDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recommended Jobs */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Recommended for You
+                <Link href="/jobs">
+                  <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                    View All Jobs
+                  </Button>
+                </Link>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recommendedJobs.map((job) => (
+                  <div key={job.id} className="border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
+                          {job.logo}
                         </div>
-                        <span>Applied {new Date(application.appliedDate).toLocaleDateString()}</span>
+                        <div>
+                          <h3 className="font-semibold text-white">{job.title}</h3>
+                          <p className="text-blue-400 text-sm">{job.company}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center space-x-1 mb-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-semibold text-green-400">{job.matchScore}% match</span>
+                        </div>
+                        <p className="text-xs text-gray-400">{job.postedDate}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recommended Jobs */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Recommended for You
-                  <Link href="/jobs">
-                    <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
-                      View All Jobs
-                    </Button>
-                  </Link>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recommendedJobs.map((job) => (
-                    <div key={job.id} className="border border-gray-700 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
-                            {job.logo}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-white">{job.title}</h3>
-                            <p className="text-blue-400 text-sm">{job.company}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="flex items-center space-x-1 mb-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="text-sm font-semibold text-green-400">{job.matchScore}% match</span>
-                          </div>
-                          <p className="text-xs text-gray-400">{job.postedDate}</p>
-                        </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4 text-sm text-gray-400">
+                        <span className="flex items-center">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {job.location}
+                        </span>
+                        <span className="flex items-center">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          {job.salary}
+                        </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-sm text-gray-400">
-                          <span className="flex items-center">
-                            <MapPin className="w-4 h-4 mr-1" />
-                            {job.location}
-                          </span>
-                          <span className="flex items-center">
-                            <DollarSign className="w-4 h-4 mr-1" />
-                            {job.salary}
-                          </span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
-                            <Heart className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                            Apply Now
-                          </Button>
-                        </div>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                          <Heart className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                          Apply Now
+                        </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Right Column */}
-          <div className="space-y-8">
-            {/* Quick Actions */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+        {/* Right Column */}
+        <div className="space-y-8">
+          {/* Quick Actions */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Link href="/cv-analysis" className="w-full">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   <Upload className="w-4 h-4 mr-2" />
                   Upload New CV
                 </Button>
+              </Link>
+              <Link href="/cv-analysis" className="w-full">
                 <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <FileText className="w-4 h-4 mr-2" />
                   Analyze CV
                 </Button>
+              </Link>
+              <Link href="/candidate/profile" className="w-full">
                 <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <User className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
+              </Link>
+              <Link href="/candidate/saved-jobs" className="w-full">
                 <Button variant="outline" className="w-full border-gray-600 text-black hover:bg-gray-700">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Job Preferences
                 </Button>
-              </CardContent>
-            </Card>
+              </Link>
+            </CardContent>
+          </Card>
 
-            {/* Upcoming Interviews */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Calendar className="w-5 h-5" />
-                  <span>Upcoming Interviews</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {upcomingInterviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {upcomingInterviews.map((interview) => (
-                      <div key={interview.id} className="border border-gray-700 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-white">{interview.position}</h3>
-                          <Badge variant="outline" className="text-blue-400 border-blue-400">
-                            {interview.type}
-                          </Badge>
-                        </div>
-                        <p className="text-blue-400 text-sm mb-2">{interview.company}</p>
-                        <div className="flex items-center justify-between text-sm text-gray-400">
-                          <span className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            {new Date(interview.date).toLocaleDateString()}
-                          </span>
-                          <span className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {interview.time}
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2">Interviewer: {interview.interviewer}</p>
+          {/* Upcoming Interviews */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Calendar className="w-5 h-5" />
+                <span>Upcoming Interviews</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {upcomingInterviews.length > 0 ? (
+                <div className="space-y-4">
+                  {upcomingInterviews.map((interview) => (
+                    <div key={interview.id} className="border border-gray-700 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-white">{interview.position}</h3>
+                        <Badge variant="outline" className="text-blue-400 border-blue-400">
+                          {interview.type}
+                        </Badge>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">No upcoming interviews</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Job Search Tips */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <TrendingUp className="w-5 h-5" />
-                  <span>Job Search Tips</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="p-3 bg-blue-600/10 border border-blue-600/20 rounded-lg">
-                    <h4 className="font-medium text-blue-300 mb-1">Optimize Your Profile</h4>
-                    <p className="text-sm text-gray-300">Complete profiles get 40% more views from recruiters</p>
-                  </div>
-                  <div className="p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
-                    <h4 className="font-medium text-green-300 mb-1">Update Your Skills</h4>
-                    <p className="text-sm text-gray-300">Add trending skills to match more job opportunities</p>
-                  </div>
-                  <div className="p-3 bg-purple-600/10 border border-purple-600/20 rounded-lg">
-                    <h4 className="font-medium text-purple-300 mb-1">Set Job Alerts</h4>
-                    <p className="text-sm text-gray-300">Get notified when new jobs match your preferences</p>
-                  </div>
+                      <p className="text-blue-400 text-sm mb-2">{interview.company}</p>
+                      <div className="flex items-center justify-between text-sm text-gray-400">
+                        <span className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {new Date(interview.date).toLocaleDateString()}
+                        </span>
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {interview.time}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">Interviewer: {interview.interviewer}</p>
+                    </div>
+                  ))}
                 </div>
-              </CardContent>
+              ) : (
+                <div className="text-center py-8">
+                  <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400">No upcoming interviews</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Job Search Tips */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5" />
+                <span>Job Search Tips</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="p-3 bg-blue-600/10 border border-blue-600/20 rounded-lg">
+                  <h4 className="font-medium text-blue-300 mb-1">Optimize Your Profile</h4>
+                  <p className="text-sm text-gray-300">Complete profiles get 40% more views from recruiters</p>
+                </div>
+                <div className="p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
+                  <h4 className="font-medium text-green-300 mb-1">Update Your Skills</h4>
+                  <p className="text-sm text-gray-300">Add trending skills to match more job opportunities</p>
+                </div>
+                <div className="p-3 bg-purple-600/10 border border-purple-600/20 rounded-lg">
+                  <h4 className="font-medium text-purple-300 mb-1">Set Job Alerts</h4>
+                  <p className="text-sm text-gray-300">Get notified when new jobs match your preferences</p>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
       </div>
