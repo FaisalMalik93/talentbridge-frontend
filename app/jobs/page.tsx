@@ -12,6 +12,7 @@ import Link from "next/link"
 import { apiClient } from "@/lib/api-client"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
+import { COUNTRIES, JOB_TYPES } from "@/lib/constants"
 
 interface Job {
   id: string
@@ -37,10 +38,14 @@ export default function JobsPage() {
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Filter States
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState("newest")
   const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([])
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [selectedCountry, setSelectedCountry] = useState("")
+  const [selectedSalaryRange, setSelectedSalaryRange] = useState("")
+  const [selectedExperience, setSelectedExperience] = useState<string[]>([])
 
   useEffect(() => {
     fetchJobs()
@@ -48,7 +53,7 @@ export default function JobsPage() {
 
   useEffect(() => {
     applyFilters()
-  }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedLocations])
+  }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedCountry, selectedSalaryRange, selectedExperience])
 
   const fetchJobs = async () => {
     setLoading(true)
@@ -85,11 +90,44 @@ export default function JobsPage() {
       )
     }
 
-    // Location filter
-    if (selectedLocations.length > 0) {
+    // Location filter (Country)
+    if (selectedCountry && selectedCountry !== "all") {
       filtered = filtered.filter((job) =>
-        selectedLocations.some((loc) => job.location?.toLowerCase().includes(loc.toLowerCase()))
+        job.location?.toLowerCase().includes(selectedCountry.toLowerCase())
       )
+    }
+
+    // Experience Level filter
+    if (selectedExperience.length > 0) {
+      filtered = filtered.filter((job) =>
+        selectedExperience.some((level) => {
+          // Basic keyword matching
+          const text = (job.description + " " + job.title).toLowerCase()
+          const lvl = level.toLowerCase()
+          if (lvl.includes("entry")) return text.includes("entry") || text.includes("junior")
+          if (lvl.includes("mid")) return text.includes("mid") || text.includes("intermediate")
+          if (lvl.includes("senior")) return text.includes("senior")
+          if (lvl.includes("executive")) return text.includes("executive") || text.includes("lead") || text.includes("principal")
+          return text.includes(lvl)
+        })
+      )
+    }
+
+    // Salary Range filter
+    if (selectedSalaryRange && selectedSalaryRange !== "all") {
+      const [minStr, maxStr] = selectedSalaryRange.replace(/k/g, '000').replace(/\+/g, '').split('-')
+      const min = parseInt(minStr) || 0
+      const max = maxStr ? parseInt(maxStr) : Infinity
+
+      filtered = filtered.filter(job => {
+        if (!job.salary_range) return false
+        const match = job.salary_range.replace(/,/g, '').match(/(\d+)/)
+        if (!match) return false
+        let val = parseInt(match[0])
+        if (job.salary_range.toLowerCase().includes('k') && val < 1000) val *= 1000
+
+        return val >= min && val <= max
+      })
     }
 
     // Sorting
@@ -101,7 +139,6 @@ export default function JobsPage() {
         filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
         break
       case "relevance":
-        // For now, sort by applications count as a proxy for relevance
         filtered.sort((a, b) => b.applications_count - a.applications_count)
         break
     }
@@ -113,84 +150,13 @@ export default function JobsPage() {
     setSelectedJobTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
   }
 
-  const toggleLocation = (location: string) => {
-    setSelectedLocations((prev) => (prev.includes(location) ? prev.filter((l) => l !== location) : [...prev, location]))
+  const toggleExperience = (level: string) => {
+    setSelectedExperience((prev) => (prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]))
   }
 
   const toggleSaveJob = (jobId: string) => {
     setSavedJobs((prev) => (prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]))
   }
-
-  const handleApplyClick = () => {
-    if (!isAuthenticated) {
-      router.push('/auth/signin?redirect=/jobs')
-    }
-    // If authenticated, the link will handle navigation
-  }
-
-  // COMMENTED OUT: Dummy data - now fetching from database
-  // const jobs = [
-  //   {
-  //     id: 1,
-  //     title: "Senior Frontend Developer",
-  //     company: "TechCorp Inc.",
-  //     location: "Remote",
-  //     salary: "$80k - $120k",
-  //     type: "Full-time",
-  //     posted: "2 days ago",
-  //     description: "We're looking for a senior frontend developer with React and TypeScript experience...",
-  //     skills: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
-  //     logo: "🚀",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "UI/UX Designer",
-  //     company: "DesignStudio",
-  //     location: "New York, NY",
-  //     salary: "$70k - $90k",
-  //     type: "Full-time",
-  //     posted: "1 day ago",
-  //     description: "Join our creative team to design beautiful and intuitive user experiences...",
-  //     skills: ["Figma", "Adobe Creative Suite", "Prototyping", "User Research"],
-  //     logo: "🎨",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Product Manager",
-  //     company: "StartupXYZ",
-  //     location: "San Francisco, CA",
-  //     salary: "$100k - $140k",
-  //     type: "Full-time",
-  //     posted: "3 days ago",
-  //     description: "Lead product strategy and work with cross-functional teams...",
-  //     skills: ["Product Strategy", "Agile", "Analytics", "Leadership"],
-  //     logo: "📊",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "DevOps Engineer",
-  //     company: "CloudTech",
-  //     location: "Remote",
-  //     salary: "$90k - $130k",
-  //     type: "Full-time",
-  //     posted: "1 week ago",
-  //     description: "Manage cloud infrastructure and CI/CD pipelines...",
-  //     skills: ["AWS", "Docker", "Kubernetes", "Terraform"],
-  //     logo: "☁️",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Marketing Specialist",
-  //     company: "GrowthCo",
-  //     location: "Austin, TX",
-  //     salary: "$50k - $70k",
-  //     type: "Full-time",
-  //     posted: "4 days ago",
-  //     description: "Drive marketing campaigns and analyze performance metrics...",
-  //     skills: ["Digital Marketing", "SEO", "Analytics", "Content Creation"],
-  //     logo: "📈",
-  //   },
-  // ]
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -206,14 +172,12 @@ export default function JobsPage() {
   }
 
   const cleanDescription = (text: string) => {
-    // Remove "Summary:" prefix and "\n" characters
     let cleaned = text
-      .replace(/^Summary:\s*/i, '') // Remove "Summary:" at the start
-      .replace(/\\n/g, ' ') // Replace literal \n with space
-      .replace(/\n/g, ' ') // Replace actual newlines with space
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/^Summary:\s*/i, '')
+      .replace(/\\n/g, ' ')
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim()
-
     return cleaned
   }
 
@@ -240,7 +204,7 @@ export default function JobsPage() {
                 <div>
                   <h3 className="font-medium mb-3">Job Type</h3>
                   <div className="space-y-2">
-                    {["Full-time", "Part-time", "Contract", "Freelance"].map((type) => (
+                    {[...JOB_TYPES, "Remote"].map((type) => (
                       <div key={type} className="flex items-center space-x-2">
                         <Checkbox
                           id={type}
@@ -255,14 +219,18 @@ export default function JobsPage() {
                   </div>
                 </div>
 
-                {/* Experience Level */}
+                {/* Experience Level - Static for now as requested only changes to Type/Location */}
                 <div>
                   <h3 className="font-medium mb-3">Experience Level</h3>
                   <div className="space-y-2">
                     {["Entry Level", "Mid Level", "Senior Level", "Executive"].map((level) => (
                       <div key={level} className="flex items-center space-x-2">
-                        <Checkbox id={level} />
-                        <label htmlFor={level} className="text-sm text-gray-300">
+                        <Checkbox
+                          id={level}
+                          checked={selectedExperience.includes(level)}
+                          onCheckedChange={() => toggleExperience(level)}
+                        />
+                        <label htmlFor={level} className="text-sm text-gray-300 cursor-pointer">
                           {level}
                         </label>
                       </div>
@@ -273,11 +241,12 @@ export default function JobsPage() {
                 {/* Salary Range */}
                 <div>
                   <h3 className="font-medium mb-3">Salary Range</h3>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select range" />
+                  <Select value={selectedSalaryRange} onValueChange={setSelectedSalaryRange}>
+                    <SelectTrigger className="bg-gray-800 border-gray-600">
+                      <SelectValue placeholder="Any Salary" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="all">Any Salary</SelectItem>
                       <SelectItem value="0-50k">$0 - $50k</SelectItem>
                       <SelectItem value="50k-100k">$50k - $100k</SelectItem>
                       <SelectItem value="100k-150k">$100k - $150k</SelectItem>
@@ -289,20 +258,19 @@ export default function JobsPage() {
                 {/* Location */}
                 <div>
                   <h3 className="font-medium mb-3">Location</h3>
-                  <div className="space-y-2">
-                    {["Remote", "New York", "San Francisco", "Austin", "Seattle"].map((location) => (
-                      <div key={location} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={location}
-                          checked={selectedLocations.includes(location)}
-                          onCheckedChange={() => toggleLocation(location)}
-                        />
-                        <label htmlFor={location} className="text-sm text-gray-300 cursor-pointer">
-                          {location}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                    <SelectTrigger className="bg-gray-800 border-gray-600">
+                      <SelectValue placeholder="All Locations" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Locations</SelectItem>
+                      {COUNTRIES.map((country) => (
+                        <SelectItem key={country} value={country}>
+                          {country}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardContent>
@@ -374,6 +342,19 @@ export default function JobsPage() {
           {!loading && !error && jobs.length > 0 && filteredJobs.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-400">No jobs match your search criteria. Try adjusting your filters.</p>
+              <div className="mt-4">
+                <Button
+                  variant="outline"
+                  className="border-gray-600 text-black hover:bg-gray-800"
+                  onClick={() => {
+                    setSearchQuery("")
+                    setSelectedJobTypes([])
+                    setSelectedCountry("")
+                  }}
+                >
+                  Clear All Filters
+                </Button>
+              </div>
             </div>
           )}
 
@@ -418,7 +399,6 @@ export default function JobsPage() {
                             )}
                             {job.salary_range && (
                               <span className="flex items-center">
-                                <DollarSign className="w-4 h-4 mr-1" />
                                 {job.salary_range}
                               </span>
                             )}
@@ -486,8 +466,8 @@ export default function JobsPage() {
             </div>
           )}
 
-          {/* Clear Filters Button */}
-          {!loading && !error && (selectedJobTypes.length > 0 || selectedLocations.length > 0 || searchQuery) && (
+          {/* Clear Filters Button (Bottom) */}
+          {!loading && !error && (selectedJobTypes.length > 0 || selectedCountry || searchQuery) && (
             <div className="text-center mt-8">
               <Button
                 variant="outline"
@@ -495,7 +475,9 @@ export default function JobsPage() {
                 onClick={() => {
                   setSearchQuery("")
                   setSelectedJobTypes([])
-                  setSelectedLocations([])
+                  setSelectedCountry("")
+                  setSelectedSalaryRange("")
+                  setSelectedExperience([])
                 }}
               >
                 Clear All Filters
