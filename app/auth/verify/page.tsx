@@ -1,6 +1,4 @@
-"use client"
-
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,6 +11,7 @@ export default function VerifyEmailPage() {
     const token = searchParams.get('token')
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
     const [message, setMessage] = useState('')
+    const verifyCalled = useRef(false)
 
     useEffect(() => {
         if (!token) {
@@ -21,6 +20,9 @@ export default function VerifyEmailPage() {
             return
         }
 
+        if (verifyCalled.current) return
+        verifyCalled.current = true
+
         const verify = async () => {
             try {
                 const response = await apiClient.get<any>(`/api/auth/verify-email?token=${token}`)
@@ -28,6 +30,10 @@ export default function VerifyEmailPage() {
                     setStatus('success')
                     setMessage(response.data.message)
                 } else {
+                    // Check if it's an "already verified" message from the backend logs or generic error
+                    // But usually 400 returns error field.
+                    // If we want to be smarter, we could assume if it fails it might be race condition? 
+                    // No, let's stick to strict logic but prevent double call.
                     setStatus('error')
                     setMessage(response.error || "Verification failed")
                 }
