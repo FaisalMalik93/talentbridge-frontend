@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Search, MapPin, Briefcase, Users, CheckCircle, Zap, Shield, Clock, Building } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/navigation/header"
+import { Footer } from "@/components/layout/footer"
 
 export default function HomePage() {
   return (
@@ -28,7 +29,7 @@ export default function HomePage() {
 
           {/* Search Bar */}
           <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 shadow-2xl">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
@@ -63,8 +64,8 @@ export default function HomePage() {
                   </SelectContent>
                 </Select>
               </div>
-              <Link href="/jobs">
-                <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-8">Find job openings now</Button>
+              <Link href="/jobs" className="w-full md:w-auto">
+                <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-8 w-full md:w-auto">Find job openings now</Button>
               </Link>
             </div>
           </div>
@@ -75,12 +76,12 @@ export default function HomePage() {
       <section className="py-12 border-b border-gray-800">
         <div className="container mx-auto px-4">
           <p className="text-center text-gray-400 mb-8">Trusted by leading companies</p>
-          <div className="flex justify-center items-center space-x-12 opacity-60">
-            <div className="text-2xl font-bold">IPSUM</div>
-            <div className="text-2xl font-bold">COMPANY</div>
-            <div className="text-2xl font-bold">BRAND</div>
-            <div className="text-2xl font-bold">LOGO</div>
-            <div className="text-2xl font-bold">BUSINESS</div>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-60">
+            <div className="text-xl md:text-2xl font-bold">IPSUM</div>
+            <div className="text-xl md:text-2xl font-bold">COMPANY</div>
+            <div className="text-xl md:text-2xl font-bold">BRAND</div>
+            <div className="text-xl md:text-2xl font-bold">LOGO</div>
+            <div className="text-xl md:text-2xl font-bold">BUSINESS</div>
           </div>
         </div>
       </section>
@@ -127,9 +128,9 @@ export default function HomePage() {
           {/* Search Interface */}
           <div className="max-w-4xl mx-auto mb-12">
             <div className="bg-gray-800 rounded-xl p-6">
-              <div className="flex flex-wrap gap-4 mb-6">
+              <div className="flex flex-col md:flex-row flex-wrap gap-4 mb-6">
                 <Select>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-full md:w-40">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -139,7 +140,7 @@ export default function HomePage() {
                 </Select>
 
                 <Select>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-full md:w-40">
                     <SelectValue placeholder="Experience" />
                   </SelectTrigger>
                   <SelectContent>
@@ -150,7 +151,7 @@ export default function HomePage() {
                 </Select>
 
                 <Select>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-full md:w-40">
                     <SelectValue placeholder="Salary Range" />
                   </SelectTrigger>
                   <SelectContent>
@@ -160,8 +161,8 @@ export default function HomePage() {
                   </SelectContent>
                 </Select>
 
-                <Link href="/jobs">
-                  <Button className="bg-blue-600 hover:bg-blue-700">Search</Button>
+                <Link href="/jobs" className="w-full md:w-auto">
+                  <Button className="bg-blue-600 hover:bg-blue-700 w-full md:w-auto">Search</Button>
                 </Link>
               </div>
 
@@ -219,15 +220,15 @@ export default function HomePage() {
             ].map((job, index) => (
               <Card key={index} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center text-2xl">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
                         {job.logo}
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-white">{job.title}</h3>
                         <p className="text-gray-400">{job.company}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-gray-500">
                           <span className="flex items-center">
                             <MapPin className="w-4 h-4 mr-1" />
                             {job.location}
@@ -239,14 +240,14 @@ export default function HomePage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Link href="/jobs">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                      <Link href="/jobs" className="w-full sm:w-auto">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700 w-full sm:w-auto">
                           View Details
                         </Button>
                       </Link>
-                      <Link href="/auth/signin">
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                      <Link href="/auth/signin" className="w-full sm:w-auto">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
                           Apply Now
                         </Button>
                       </Link>
@@ -396,89 +397,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">TB</span>
-                </div>
-                <span className="text-xl font-bold">TalentBridge</span>
-              </div>
-              <p className="text-gray-400">AI-powered recruitment platform connecting talent with opportunities.</p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">For Job Seekers</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/jobs" className="hover:text-white">
-                    Browse Jobs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/cv-analysis" className="hover:text-white">
-                    CV Analysis
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth/signup" className="hover:text-white">
-                    Sign Up
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">For Employers</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/post-job" className="hover:text-white">
-                    Post a Job
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="hover:text-white">
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="hover:text-white">
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/about" className="hover:text-white">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-white">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/companies" className="hover:text-white">
-                    Companies
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 TalentBridge. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

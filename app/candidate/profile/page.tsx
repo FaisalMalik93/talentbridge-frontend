@@ -189,19 +189,19 @@ export default function CandidateProfile() {
   return (
     <div className="container mx-auto px-4 py-8 text-white">
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold mb-2">My Profile</h1>
           <p className="text-gray-400">Manage your professional information and preferences</p>
         </div>
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800 flex-1 md:flex-none">
             <Eye className="w-4 h-4 mr-2" />
             Preview Profile
           </Button>
           <Button
             onClick={() => setIsEditing(!isEditing)}
-            className={isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}
+            className={`${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"} flex-1 md:flex-none`}
           >
             {isEditing ? (
               <>
@@ -263,7 +263,7 @@ export default function CandidateProfile() {
               <div className="space-y-2 text-sm text-gray-400">
                 <div className="flex items-center justify-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>{profileData.email}</span>
+                  <span className="break-all">{profileData.email}</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <Phone className="w-4 h-4" />
@@ -346,20 +346,22 @@ export default function CandidateProfile() {
         {/* Right Column - Detailed Information */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="personal" className="space-y-6">
-            <TabsList className="bg-gray-800 border-gray-700">
-              <TabsTrigger value="personal" className="data-[state=active]:bg-blue-600">
-                Personal Info
-              </TabsTrigger>
-              <TabsTrigger value="experience" className="data-[state=active]:bg-blue-600">
-                Experience
-              </TabsTrigger>
-              <TabsTrigger value="education" className="data-[state=active]:bg-blue-600">
-                Education
-              </TabsTrigger>
-              <TabsTrigger value="certifications" className="data-[state=active]:bg-blue-600">
-                Certifications
-              </TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto pb-2">
+              <TabsList className="bg-gray-800 border-gray-700 inline-flex w-auto min-w-full justify-start">
+                <TabsTrigger value="personal" className="data-[state=active]:bg-blue-600 px-4">
+                  Personal Info
+                </TabsTrigger>
+                <TabsTrigger value="experience" className="data-[state=active]:bg-blue-600 px-4">
+                  Experience
+                </TabsTrigger>
+                <TabsTrigger value="education" className="data-[state=active]:bg-blue-600 px-4">
+                  Education
+                </TabsTrigger>
+                <TabsTrigger value="certifications" className="data-[state=active]:bg-blue-600 px-4">
+                  Certifications
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="personal">
               <Card className="bg-gray-800 border-gray-700">
@@ -467,9 +469,9 @@ export default function CandidateProfile() {
                   <div className="space-y-6">
                     {profileData.experience.map((exp, index) => (
                       <div key={exp.id} className="border border-gray-700 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <Briefcase className="w-8 h-8 text-blue-400" />
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-4">
+                          <div className="flex items-start space-x-3">
+                            <Briefcase className="w-8 h-8 text-blue-400 flex-shrink-0" />
                             <div>
                               <h3 className="font-semibold text-white">{exp.title}</h3>
                               <p className="text-blue-400">{exp.company}</p>
@@ -479,7 +481,7 @@ export default function CandidateProfile() {
                             </div>
                           </div>
                           {isEditing && (
-                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white self-end sm:self-auto">
                               <Edit className="w-4 h-4" />
                             </Button>
                           )}
@@ -509,9 +511,9 @@ export default function CandidateProfile() {
                   <div className="space-y-6">
                     {profileData.education.map((edu, index) => (
                       <div key={edu.id} className="border border-gray-700 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <GraduationCap className="w-8 h-8 text-green-400" />
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-4">
+                          <div className="flex items-start space-x-3">
+                            <GraduationCap className="w-8 h-8 text-green-400 flex-shrink-0" />
                             <div>
                               <h3 className="font-semibold text-white">{edu.degree}</h3>
                               <p className="text-green-400">{edu.school}</p>
@@ -522,7 +524,7 @@ export default function CandidateProfile() {
                             </div>
                           </div>
                           {isEditing && (
-                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white self-end sm:self-auto">
                               <Edit className="w-4 h-4" />
                             </Button>
                           )}
@@ -551,9 +553,9 @@ export default function CandidateProfile() {
                   <div className="space-y-6">
                     {profileData.certifications.map((cert, index) => (
                       <div key={cert.id} className="border border-gray-700 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <Award className="w-8 h-8 text-yellow-400" />
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-4">
+                          <div className="flex items-start space-x-3">
+                            <Award className="w-8 h-8 text-yellow-400 flex-shrink-0" />
                             <div>
                               <h3 className="font-semibold text-white">{cert.name}</h3>
                               <p className="text-yellow-400">{cert.issuer}</p>
@@ -562,7 +564,7 @@ export default function CandidateProfile() {
                             </div>
                           </div>
                           {isEditing && (
-                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white self-end sm:self-auto">
                               <Edit className="w-4 h-4" />
                             </Button>
                           )}

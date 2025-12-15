@@ -196,9 +196,9 @@ export default function CandidateDashboard() {
       {/* Profile Completion Alert */}
       <Card className="bg-blue-600/10 border-blue-600/50 mb-8">
         <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-4 w-full md:w-auto">
+              <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center flex-shrink-0">
                 <User className="w-6 h-6 text-blue-400" />
               </div>
               <div>
@@ -206,10 +206,10 @@ export default function CandidateDashboard() {
                 <p className="text-blue-300">Your profile is {profileCompletion}% complete</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Progress value={profileCompletion} className="w-32" />
+            <div className="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end">
+              <Progress value={profileCompletion} className="w-full md:w-32" />
               <Link href="/candidate/profile">
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap">
                   Complete Profile
                 </Button>
               </Link>
@@ -219,16 +219,16 @@ export default function CandidateDashboard() {
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
         {stats.map((stat, index) => (
           <Card key={index} className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <stat.icon className={`w-8 h-8 ${stat.color}`} />
-                <span className="text-sm text-green-400 font-semibold">{stat.change}</span>
+                <stat.icon className={`w-6 h-6 md:w-8 md:h-8 ${stat.color}`} />
+                <span className="text-xs md:text-sm text-green-400 font-semibold">{stat.change}</span>
               </div>
-              <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-              <p className="text-gray-400 text-sm">{stat.title}</p>
+              <div className="text-xl md:text-2xl font-bold text-white mb-1">{stat.value}</div>
+              <p className="text-gray-400 text-xs md:text-sm">{stat.title}</p>
             </CardContent>
           </Card>
         ))}
@@ -254,19 +254,19 @@ export default function CandidateDashboard() {
               <div className="space-y-4">
                 {recentApplications.map((application) => (
                   <div key={application.id} className="border border-gray-700 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
+                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg flex-shrink-0">
                           {application.logo}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-white">{application.jobTitle}</h3>
+                          <h3 className="font-semibold text-white line-clamp-1">{application.jobTitle}</h3>
                           <p className="text-blue-400 text-sm">{application.company}</p>
                         </div>
                       </div>
-                      <Badge className={getStatusColor(application.status)}>{application.status}</Badge>
+                      <Badge className={`${getStatusColor(application.status)} w-fit`}>{application.status}</Badge>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-gray-400">
+                    <div className="flex flex-wrap items-center justify-between gap-y-2 text-sm text-gray-400">
                       <div className="flex items-center space-x-4">
                         <span className="flex items-center">
                           <MapPin className="w-4 h-4 mr-1" />
@@ -277,7 +277,7 @@ export default function CandidateDashboard() {
                           {application.salary}
                         </span>
                       </div>
-                      <span>Applied {new Date(application.appliedDate).toLocaleDateString()}</span>
+                      <span className="text-xs sm:text-sm">Applied {new Date(application.appliedDate).toLocaleDateString()}</span>
                     </div>
                   </div>
                 ))}
@@ -301,25 +301,25 @@ export default function CandidateDashboard() {
               <div className="space-y-4">
                 {recommendedJobs.map((job) => (
                   <div key={job.id} className="border border-gray-700 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-start justify-between mb-3 gap-2">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg">
+                        <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg flex-shrink-0">
                           {job.logo}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-white">{job.title}</h3>
+                          <h3 className="font-semibold text-white line-clamp-1">{job.title}</h3>
                           <p className="text-blue-400 text-sm">{job.company}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="flex items-center space-x-1 mb-1">
+                      <div className="text-right flex-shrink-0">
+                        <div className="flex items-center justify-end space-x-1 mb-1">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-semibold text-green-400">{job.matchScore}% match</span>
                         </div>
                         <p className="text-xs text-gray-400">{job.postedDate}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center space-x-4 text-sm text-gray-400">
                         <span className="flex items-center">
                           <MapPin className="w-4 h-4 mr-1" />
@@ -330,11 +330,11 @@ export default function CandidateDashboard() {
                           {job.salary}
                         </span>
                       </div>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                      <div className="flex space-x-2 w-full sm:w-auto">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700 flex-1 sm:flex-none">
                           <Heart className="w-4 h-4" />
                         </Button>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 flex-1 sm:flex-none">
                           Apply Now
                         </Button>
                       </div>

@@ -7,12 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, MapPin, Clock, DollarSign, Filter, Heart, Share2 } from "lucide-react"
+import { Search, MapPin, Clock, DollarSign, Filter, Heart, Share2, Menu } from "lucide-react"
 import Link from "next/link"
 import { apiClient } from "@/lib/api-client"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { COUNTRIES, JOB_TYPES } from "@/lib/constants"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 interface Job {
   id: string
@@ -29,6 +36,102 @@ interface Job {
   is_active: boolean
   applications_count: number
 }
+
+// Extracted Filter Component
+const FilterPanel = ({
+  selectedJobTypes,
+  toggleJobType,
+  selectedExperience,
+  toggleExperience,
+  selectedSalaryRange,
+  setSelectedSalaryRange,
+  selectedCountry,
+  setSelectedCountry
+}: {
+  selectedJobTypes: string[],
+  toggleJobType: (t: string) => void,
+  selectedExperience: string[],
+  toggleExperience: (l: string) => void,
+  selectedSalaryRange: string,
+  setSelectedSalaryRange: (s: string) => void,
+  selectedCountry: string,
+  setSelectedCountry: (c: string) => void
+}) => (
+  <div className="space-y-6">
+    {/* Job Type */}
+    <div>
+      <h3 className="font-medium mb-3">Job Type</h3>
+      <div className="space-y-2">
+        {[...JOB_TYPES, "Remote"].map((type) => (
+          <div key={type} className="flex items-center space-x-2">
+            <Checkbox
+              id={`filter-${type}`}
+              checked={selectedJobTypes.includes(type)}
+              onCheckedChange={() => toggleJobType(type)}
+            />
+            <label htmlFor={`filter-${type}`} className="text-sm text-gray-300 cursor-pointer">
+              {type}
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Experience Level */}
+    <div>
+      <h3 className="font-medium mb-3">Experience Level</h3>
+      <div className="space-y-2">
+        {["Entry Level", "Mid Level", "Senior Level", "Executive"].map((level) => (
+          <div key={level} className="flex items-center space-x-2">
+            <Checkbox
+              id={`filter-${level}`}
+              checked={selectedExperience.includes(level)}
+              onCheckedChange={() => toggleExperience(level)}
+            />
+            <label htmlFor={`filter-${level}`} className="text-sm text-gray-300 cursor-pointer">
+              {level}
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Salary Range */}
+    <div>
+      <h3 className="font-medium mb-3">Salary Range</h3>
+      <Select value={selectedSalaryRange} onValueChange={setSelectedSalaryRange}>
+        <SelectTrigger className="bg-gray-800 border-gray-600">
+          <SelectValue placeholder="Any Salary" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Any Salary</SelectItem>
+          <SelectItem value="0-50k">$0 - $50k</SelectItem>
+          <SelectItem value="50k-100k">$50k - $100k</SelectItem>
+          <SelectItem value="100k-150k">$100k - $150k</SelectItem>
+          <SelectItem value="150k+">$150k+</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Location */}
+    <div>
+      <h3 className="font-medium mb-3">Location</h3>
+      <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+        <SelectTrigger className="bg-gray-800 border-gray-600">
+          <SelectValue placeholder="All Locations" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Locations</SelectItem>
+          {COUNTRIES.map((country) => (
+            <SelectItem key={country} value={country}>
+              {country}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
+);
 
 export default function JobsPage() {
   const { isAuthenticated } = useAuth()
@@ -190,117 +293,85 @@ export default function JobsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar */}
-        <div className="lg:col-span-1">
-          <Card className="bg-gray-800 border-gray-700 sticky top-8 text-white">
+        {/* Filters Sidebar - Desktop */}
+        <div className="hidden lg:block lg:col-span-1">
+          <Card className="bg-gray-800 border-gray-700 sticky top-24 text-white">
             <CardContent className="p-6">
               <div className="flex items-center space-x-2 mb-6">
                 <Filter className="w-5 h-5" />
                 <h2 className="text-lg font-semibold">Filters</h2>
               </div>
 
-              <div className="space-y-6">
-                {/* Job Type */}
-                <div>
-                  <h3 className="font-medium mb-3">Job Type</h3>
-                  <div className="space-y-2">
-                    {[...JOB_TYPES, "Remote"].map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={type}
-                          checked={selectedJobTypes.includes(type)}
-                          onCheckedChange={() => toggleJobType(type)}
-                        />
-                        <label htmlFor={type} className="text-sm text-gray-300 cursor-pointer">
-                          {type}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Experience Level - Static for now as requested only changes to Type/Location */}
-                <div>
-                  <h3 className="font-medium mb-3">Experience Level</h3>
-                  <div className="space-y-2">
-                    {["Entry Level", "Mid Level", "Senior Level", "Executive"].map((level) => (
-                      <div key={level} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={level}
-                          checked={selectedExperience.includes(level)}
-                          onCheckedChange={() => toggleExperience(level)}
-                        />
-                        <label htmlFor={level} className="text-sm text-gray-300 cursor-pointer">
-                          {level}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Salary Range */}
-                <div>
-                  <h3 className="font-medium mb-3">Salary Range</h3>
-                  <Select value={selectedSalaryRange} onValueChange={setSelectedSalaryRange}>
-                    <SelectTrigger className="bg-gray-800 border-gray-600">
-                      <SelectValue placeholder="Any Salary" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Any Salary</SelectItem>
-                      <SelectItem value="0-50k">$0 - $50k</SelectItem>
-                      <SelectItem value="50k-100k">$50k - $100k</SelectItem>
-                      <SelectItem value="100k-150k">$100k - $150k</SelectItem>
-                      <SelectItem value="150k+">$150k+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Location */}
-                <div>
-                  <h3 className="font-medium mb-3">Location</h3>
-                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                    <SelectTrigger className="bg-gray-800 border-gray-600">
-                      <SelectValue placeholder="All Locations" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Locations</SelectItem>
-                      {COUNTRIES.map((country) => (
-                        <SelectItem key={country} value={country}>
-                          {country}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              <FilterPanel
+                selectedJobTypes={selectedJobTypes}
+                toggleJobType={toggleJobType}
+                selectedExperience={selectedExperience}
+                toggleExperience={toggleExperience}
+                selectedSalaryRange={selectedSalaryRange}
+                setSelectedSalaryRange={setSelectedSalaryRange}
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+              />
             </CardContent>
           </Card>
         </div>
 
         {/* Job Listings */}
         <div className="lg:col-span-3">
-          {/* Search Bar */}
+          {/* Search Bar & Mobile Filters */}
           <div className="mb-8">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   placeholder="Search jobs..."
-                  className="pl-10 bg-gray-800 border-gray-700 text-white"
+                  className="pl-10 bg-gray-800 border-gray-700 text-white w-full"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48 bg-gray-800 border-gray-700">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="relevance">Most Relevant</SelectItem>
-                </SelectContent>
-              </Select>
+
+              <div className="flex gap-2">
+                {/* Mobile Filter Button */}
+                <div className="lg:hidden">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" className="border-gray-700 bg-gray-800 text-white hover:bg-gray-700">
+                        <Filter className="w-4 h-4 mr-2" />
+                        Filters
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="bg-gray-900 border-gray-800 text-white overflow-y-auto">
+                      <SheetHeader>
+                        <SheetTitle className="text-white">Filters</SheetTitle>
+                      </SheetHeader>
+                      <div className="mt-6">
+                        <FilterPanel
+                          selectedJobTypes={selectedJobTypes}
+                          toggleJobType={toggleJobType}
+                          selectedExperience={selectedExperience}
+                          toggleExperience={toggleExperience}
+                          selectedSalaryRange={selectedSalaryRange}
+                          setSelectedSalaryRange={setSelectedSalaryRange}
+                          selectedCountry={selectedCountry}
+                          setSelectedCountry={setSelectedCountry}
+                        />
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full md:w-48 bg-gray-800 border-gray-700">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
+                    <SelectItem value="relevance">Most Relevant</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -364,18 +435,18 @@ export default function JobsPage() {
               {filteredJobs.map((job) => (
                 <Card key={job.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
                   <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col md:flex-row items-start justify-between gap-4">
                       <div className="flex items-start space-x-4 flex-1">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
                           💼
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 mb-2">
                             <div className="flex-1">
                               <h3 className="text-xl font-semibold text-white mb-1">{job.title}</h3>
                               <p className="text-blue-400 font-medium">{job.company}</p>
                             </div>
-                            <div className="flex items-center space-x-2 flex-shrink-0">
+                            <div className="flex items-center space-x-2 flex-shrink-0 mt-2 md:mt-0">
                               <Button
                                 variant="ghost"
                                 size="sm"
