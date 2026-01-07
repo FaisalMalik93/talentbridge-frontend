@@ -19,6 +19,7 @@ export default function JobDetailsPage() {
 
     const [job, setJob] = useState<Job | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [applicationStatus, setApplicationStatus] = useState<{ has_applied: boolean } | null>(null)
 
     const handleApply = () => {
         if (!isAuthenticated) {
@@ -60,6 +61,22 @@ export default function JobDetailsPage() {
 
         fetchJob()
     }, [params, router])
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            if (isAuthenticated && job?.id) {
+                try {
+                    const response = await jobsService.getApplicationStatus(job.id)
+                    if (response.data) {
+                        setApplicationStatus(response.data)
+                    }
+                } catch (error) {
+                    console.error("Failed to check application status:", error)
+                }
+            }
+        }
+        checkStatus()
+    }, [isAuthenticated, job?.id])
 
     if (isLoading) {
         return (
@@ -124,11 +141,11 @@ export default function JobDetailsPage() {
 
                     <div className="flex flex-col gap-3 min-w-[200px]">
                         <Button
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6 disabled:opacity-70 disabled:cursor-not-allowed"
                             onClick={handleApply}
-                            disabled={!job.is_active}
+                            disabled={!job.is_active || applicationStatus?.has_applied}
                         >
-                            Apply Now
+                            {applicationStatus?.has_applied ? "Already Applied" : "Apply Now"}
                         </Button>
                         <div className="flex justify-center">
                             <Badge variant={job.is_active ? "default" : "secondary"} className={job.is_active ? "bg-green-600" : "bg-yellow-600"}>

@@ -98,6 +98,28 @@ export default function JobApplicationPage() {
         }
     }
 
+    useEffect(() => {
+        const checkEligibility = async () => {
+            if (!job) return;
+
+            // Check if already applied
+            try {
+                const statusRes = await jobsService.getApplicationStatus(job.id)
+                if (statusRes.data?.has_applied) {
+                    toast.error("You have already applied for this job")
+                    router.push(`/jobs/${job.id}`)
+                    return
+                }
+            } catch (error) {
+                console.error("Failed to check status:", error)
+            }
+        }
+
+        if (isAuthenticated && job) {
+            checkEligibility()
+        }
+    }, [isAuthenticated, job, router])
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -134,6 +156,7 @@ export default function JobApplicationPage() {
 
             if (response.data?.success) {
                 toast.success("Application submitted successfully!")
+                // Force a small delay or invalidate cache if using React Query (not here though)
                 router.push("/candidate/dashboard")
             } else {
                 toast.error(response.error || "Failed to submit application")

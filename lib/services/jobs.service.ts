@@ -62,6 +62,13 @@ class JobsService {
   async getMyApplications() {
     return await apiClient.get<any[]>('/api/jobs/applications/my-applications');
   }
+
+  /**
+   * Check application status for a job
+   */
+  async getApplicationStatus(jobId: string) {
+    return await apiClient.get<{ has_applied: boolean; application_id?: string; status?: string }>(`/api/jobs/${jobId}/application-status`);
+  }
 }
 
 export const jobsService = new JobsService();
