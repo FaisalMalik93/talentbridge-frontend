@@ -291,7 +291,6 @@ export default function CandidateDashboard() {
                           {application.location}
                         </span>
                         <span className="flex items-center">
-                          <DollarSign className="w-4 h-4 mr-1" />
                           {application.salary}
                         </span>
                       </div>
@@ -344,7 +343,6 @@ export default function CandidateDashboard() {
                           {job.location}
                         </span>
                         <span className="flex items-center">
-                          <DollarSign className="w-4 h-4 mr-1" />
                           {job.salary}
                         </span>
                       </div>
