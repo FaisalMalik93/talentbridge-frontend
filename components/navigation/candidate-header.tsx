@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/auth-context";
 import {
@@ -114,10 +115,13 @@ export function CandidateHeader() {
             <SheetContent side="left" className="bg-gray-900 border-gray-800 text-white w-[300px]">
               <SheetHeader>
                 <SheetTitle className="text-white flex items-center gap-2">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">TB</span>
-                  </div>
-                  TalentBridge
+                  <Image
+                    src="/logo-talentbridge.png"
+                    alt="TalentBridge Logo"
+                    width={180}
+                    height={50}
+                    className="h-12 w-auto rounded-lg object-contain"
+                  />
                 </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-4 mt-8">
@@ -145,12 +149,15 @@ export function CandidateHeader() {
           </Sheet>
         </div>
 
-        {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">TB</span>
-          </div>
-          <span className="text-xl font-bold text-white hidden sm:inline-block">TalentBridge</span>
+          <Image
+            src="/logo-talentbridge.png"
+            alt="TalentBridge Logo"
+            width={180}
+            height={50}
+            className="h-14 w-auto rounded-lg object-contain"
+            priority
+          />
         </Link>
 
         {/* Navigation Links - Candidate Specific */}

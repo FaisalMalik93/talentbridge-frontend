@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "TalentBridge - AI-Powered Job Matching Platform",
   description:
     "Connect with top companies and find your perfect remote position. Our AI-powered platform matches your skills with the right opportunities.",
+  icons: {
+    icon: '/logo-talentbridge.png',
+  },
   generator: 'v0.dev'
 }
 
