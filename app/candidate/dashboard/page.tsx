@@ -24,14 +24,33 @@ import {
 import Link from "next/link"
 import { authService } from "@/lib/services/auth.service"
 import type { User as UserType } from "@/lib/types"
+import { jobsService } from "@/lib/services/jobs.service"
+import { toast } from "sonner"
 
 export default function CandidateDashboard() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null)
   const [profileCompletion] = useState(75)
+  const [recentApplications, setRecentApplications] = useState<any[]>([])
 
   useEffect(() => {
     const user = authService.getUser()
     setCurrentUser(user)
+
+    const fetchDashboardData = async () => {
+      try {
+        const appsRes = await jobsService.getMyApplications()
+        if (appsRes.data) {
+          setRecentApplications(appsRes.data)
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error)
+        // toast.error("Failed to load dashboard data")
+      }
+    }
+
+    if (user) {
+      fetchDashboardData()
+    }
   }, [])
 
   // TODO: Fetch real stats from backend
@@ -66,8 +85,7 @@ export default function CandidateDashboard() {
     },
   ]
 
-  // TODO: Fetch real applications from backend
-  const recentApplications: any[] = []
+
 
   /* DUMMY DATA - COMMENTED OUT
   const recentApplications = [

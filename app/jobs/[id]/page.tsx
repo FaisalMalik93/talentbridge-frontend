@@ -10,12 +10,24 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, MapPin, DollarSign, Calendar, Building, Clock, ArrowLeft, Briefcase } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
+import { useAuth } from "@/contexts/auth-context"
 
 export default function JobDetailsPage() {
     const params = useParams()
     const router = useRouter()
+    const { isAuthenticated } = useAuth()
+
     const [job, setJob] = useState<Job | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+
+    const handleApply = () => {
+        if (!isAuthenticated) {
+            toast.error("Please log in to apply for this job")
+            router.push(`/auth/signin?redirect=/jobs/${job?.id}/apply`)
+            return
+        }
+        router.push(`/jobs/${job?.id}/apply`)
+    }
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -111,7 +123,11 @@ export default function JobDetailsPage() {
                     </div>
 
                     <div className="flex flex-col gap-3 min-w-[200px]">
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6">
+                        <Button
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
+                            onClick={handleApply}
+                            disabled={!job.is_active}
+                        >
                             Apply Now
                         </Button>
                         <div className="flex justify-center">

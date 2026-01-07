@@ -211,3 +211,12 @@ export interface AdminDashboard {
   };
   reference_cvs: number;
 }
+
+export interface CVResponse {
+  id: string;
+  user_id: string;
+  filename: string;
+  cv_text?: string;
+  created_at: string;
+  overall_score?: number;
+}

@@ -48,6 +48,20 @@ class JobsService {
   async deleteJob(jobId: string) {
     return await apiClient.delete(`/api/jobs/${jobId}`);
   }
+
+  /**
+   * Apply for a job
+   */
+  async applyForJob(jobId: string, data: { cv_id: string; cover_letter?: string }) {
+    // Note: Assuming API endpoint is /api/jobs/{id}/apply
+    return await apiClient.post<{ success: boolean; error?: string }>(`/api/jobs/${jobId}/apply`, data);
+  }
+  /**
+   * Get current user's applications
+   */
+  async getMyApplications() {
+    return await apiClient.get<any[]>('/api/jobs/applications/my-applications');
+  }
 }
 
 export const jobsService = new JobsService();
