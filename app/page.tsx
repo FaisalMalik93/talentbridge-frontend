@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -13,12 +13,35 @@ import Link from "next/link"
 import { Header } from "@/components/navigation/header"
 import { Footer } from "@/components/layout/footer"
 import { COUNTRIES } from "@/lib/constants"
+import jobsService from "@/lib/services/jobs.service"
+import type { Job } from "@/lib/types"
 
 export default function HomePage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [location, setLocation] = useState("")
   const [jobType, setJobType] = useState("")
+  const [featuredJobs, setFeaturedJobs] = useState<Job[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await jobsService.getAllJobs()
+        if (response.data) {
+          // Take only the first 3 active jobs for the homepage preview
+          const activeJobs = response.data.filter(job => job.is_active).slice(0, 3)
+          setFeaturedJobs(activeJobs)
+        }
+      } catch (error) {
+        console.error("Failed to fetch featured jobs:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJobs()
+  }, [])
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -221,70 +244,70 @@ export default function HomePage() {
 
           {/* Job Listings Preview */}
           <div className="max-w-4xl mx-auto space-y-4">
-            {[
-              {
-                title: "Social media intern",
-                company: "TechCorp",
-                location: "Remote",
-                salary: "$40k - $60k",
-                type: "Internship",
-                logo: "🚀",
-              },
-              {
-                title: "Social media specialist",
-                company: "StartupXYZ",
-                location: "New York, NY",
-                salary: "$60k - $80k",
-                type: "Full-time",
-                logo: "💼",
-              },
-              {
-                title: "UI/UX designer",
-                company: "DesignStudio",
-                location: "Remote",
-                salary: "$70k - $90k",
-                type: "Full-time",
-                logo: "🎨",
-              },
-            ].map((job, index) => (
-              <Card key={index} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
-                        {job.logo}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{job.title}</h3>
-                        <p className="text-gray-400">{job.company}</p>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <MapPin className="w-4 h-4 mr-1" />
-                            {job.location}
-                          </span>
-                          <span>{job.salary}</span>
-                          <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
-                            {job.type}
-                          </Badge>
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-2 text-gray-400">Loading jobs...</p>
+              </div>
+            ) : featuredJobs.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-400">No jobs to display currently.</p>
+              </div>
+            ) : (
+              featuredJobs.map((job) => (
+                <Card key={job.id} className="bg-gray-800 border-gray-700 hover:border-blue-500 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+                          💼
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">{job.title}</h3>
+                          <p className="text-gray-400">{job.company}</p>
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-gray-500">
+                            {job.location && (
+                              <span className="flex items-center">
+                                <MapPin className="w-4 h-4 mr-1" />
+                                {job.location}
+                              </span>
+                            )}
+                            {job.salary_range && (
+                              <span>{job.salary_range}</span>
+                            )}
+                            <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
+                              {job.job_type}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
+                      <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <Link href={`/jobs/${job.id}`} className="w-full sm:w-auto">
+                          <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700 w-full sm:w-auto">
+                            View Details
+                          </Button>
+                        </Link>
+                        <Link href={`/jobs/${job.id}/apply`} className="w-full sm:w-auto">
+                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
+                            Apply Now
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                      <Link href="/jobs" className="w-full sm:w-auto">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700 w-full sm:w-auto">
-                          View Details
-                        </Button>
-                      </Link>
-                      <Link href="/auth/signin" className="w-full sm:w-auto">
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
-                          Apply Now
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))
+            )}
+
+            {featuredJobs.length > 0 && (
+              <div className="text-center pt-6">
+                <Link href="/jobs">
+                  <Button variant="link" className="text-blue-400 hover:text-blue-300">
+                    View all jobs →
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
