@@ -65,6 +65,11 @@ export interface CVAnalysis {
     duration: string;
     description: string;
   }>;
+  projects?: Array<{
+    name: string;
+    description: string;
+    technologies?: string[];
+  }>;
   education: Array<{
     degree: string;
     institution: string;

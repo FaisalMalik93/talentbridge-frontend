@@ -17,6 +17,8 @@ import {
   Lightbulb,
   Loader2,
   Download,
+  Briefcase,
+  Code,
 } from 'lucide-react';
 import { cvService } from '@/lib/services/cv.service';
 import { toast } from 'sonner';
@@ -181,11 +183,10 @@ export default function CVAnalysisPage() {
           <Card className="max-w-2xl mx-auto bg-gray-800 border-gray-700">
             <CardContent className="p-8">
               <div
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                  isDragOver
-                    ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-gray-600 hover:border-gray-500'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${isDragOver
+                  ? 'border-blue-500 bg-blue-500/10'
+                  : 'border-gray-600 hover:border-gray-500'
+                  }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -321,6 +322,7 @@ export default function CVAnalysisPage() {
                 <TabsTrigger value="skills">Skills</TabsTrigger>
                 <TabsTrigger value="experience">Experience</TabsTrigger>
                 <TabsTrigger value="education">Education</TabsTrigger>
+                <TabsTrigger value="projects">Projects</TabsTrigger>
                 <TabsTrigger value="summary">Summary</TabsTrigger>
                 <TabsTrigger value="feedback">Feedback</TabsTrigger>
               </TabsList>
@@ -364,7 +366,18 @@ export default function CVAnalysisPage() {
                       ))}
                     </div>
                     {analysisResult.analysis.experience.length === 0 && (
-                      <p className="text-gray-400">No experience extracted</p>
+                      analysisResult.analysis.projects && analysisResult.analysis.projects.length > 0 ? (
+                        <div className="flex flex-col items-center justify-center p-8 text-center border border-dashed border-gray-700 rounded-lg bg-gray-800/50">
+                          <Briefcase className="w-12 h-12 text-blue-400 mb-3 opacity-50" />
+                          <p className="text-lg font-medium text-white mb-2">No Formal Work Experience</p>
+                          <p className="text-gray-400 max-w-md">
+                            Candidate has relevant expertise and project experience.
+                            Please check the <span className="text-purple-400 font-semibold cursor-pointer hover:underline" onClick={() => (document.querySelector('[value="projects"]') as HTMLElement)?.click()}>Projects</span> tab.
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-gray-400 text-center py-4">No experience extracted</p>
+                      )
                     )}
                   </CardContent>
                 </Card>
@@ -388,6 +401,43 @@ export default function CVAnalysisPage() {
                     </div>
                     {analysisResult.analysis.education.length === 0 && (
                       <p className="text-gray-400">No education extracted</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Projects Tab */}
+              <TabsContent value="projects">
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Code className="w-5 h-5 text-purple-400" />
+                      Projects & Portfolio
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      {analysisResult.analysis.projects?.map((project, index) => (
+                        <div key={index} className="border-l-4 border-purple-500 pl-4 bg-gray-800/50 p-4 rounded-r-lg hover:bg-gray-700/30 transition-colors">
+                          <h3 className="text-lg font-semibold text-white">{project.name}</h3>
+                          {project.description && <p className="text-gray-300 mb-3 mt-1 text-sm leading-relaxed">{project.description}</p>}
+                          {project.technologies && project.technologies.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {project.technologies.map((tech, i) => (
+                                <Badge key={i} variant="secondary" className="bg-gray-700 text-purple-300 text-xs hover:bg-purple-900/40">
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {(!analysisResult.analysis.projects || analysisResult.analysis.projects.length === 0) && (
+                      <div className="text-center py-8">
+                        <Code className="w-12 h-12 text-gray-600 mx-auto mb-3 opacity-50" />
+                        <p className="text-gray-400">No projects extracted</p>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -614,20 +664,18 @@ export default function CVAnalysisPage() {
                       {leaderboardData.leaderboard.map((entry) => (
                         <tr
                           key={entry.rank}
-                          className={`border-b border-gray-700/50 transition-colors ${
-                            entry.is_current_user
-                              ? 'bg-blue-600/20 hover:bg-blue-600/30'
-                              : 'hover:bg-gray-700/30'
-                          }`}
+                          className={`border-b border-gray-700/50 transition-colors ${entry.is_current_user
+                            ? 'bg-blue-600/20 hover:bg-blue-600/30'
+                            : 'hover:bg-gray-700/30'
+                            }`}
                         >
                           <td className="px-4 py-4">
                             <div className="flex items-center space-x-2">
                               {entry.rank === 1 && <span className="text-2xl">🥇</span>}
                               {entry.rank === 2 && <span className="text-2xl">🥈</span>}
                               {entry.rank === 3 && <span className="text-2xl">🥉</span>}
-                              <span className={`text-lg font-bold ${
-                                entry.rank <= 3 ? 'text-yellow-400' : 'text-gray-300'
-                              }`}>
+                              <span className={`text-lg font-bold ${entry.rank <= 3 ? 'text-yellow-400' : 'text-gray-300'
+                                }`}>
                                 #{entry.rank}
                               </span>
                             </div>
