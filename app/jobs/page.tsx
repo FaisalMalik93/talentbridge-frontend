@@ -13,13 +13,9 @@ import { apiClient } from "@/lib/api-client"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { COUNTRIES, JOB_TYPES } from "@/lib/constants"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import jobsService from "@/lib/services/jobs.service"
+import { toast } from "sonner"
 
 interface Job {
   id: string
@@ -152,11 +148,25 @@ export default function JobsPage() {
 
   useEffect(() => {
     fetchJobs()
-  }, [])
+    if (isAuthenticated) {
+      fetchSavedStatus()
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
     applyFilters()
   }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedCountry, selectedSalaryRange, selectedExperience])
+
+  const fetchSavedStatus = async () => {
+    try {
+      const response = await jobsService.getSavedJobs()
+      if (response.data) {
+        setSavedJobs(response.data.map((job: any) => job.id))
+      }
+    } catch (error) {
+      console.error("Error fetching saved jobs", error)
+    }
+  }
 
   const fetchJobs = async () => {
     setLoading(true)
@@ -257,8 +267,30 @@ export default function JobsPage() {
     setSelectedExperience((prev) => (prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]))
   }
 
-  const toggleSaveJob = (jobId: string) => {
-    setSavedJobs((prev) => (prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]))
+  const toggleSaveJob = async (jobId: string) => {
+    if (!isAuthenticated) {
+      router.push(`/auth/signin?redirect=/jobs`)
+      return
+    }
+
+    const isSaved = savedJobs.includes(jobId)
+
+    // Optimistic update
+    setSavedJobs((prev) => (isSaved ? prev.filter((id) => id !== jobId) : [...prev, jobId]))
+
+    try {
+      if (isSaved) {
+        await jobsService.unsaveJob(jobId)
+        toast.success("Job removed from saved list")
+      } else {
+        await jobsService.saveJob(jobId)
+        toast.success("Job saved successfully")
+      }
+    } catch (error) {
+      // Revert on error
+      setSavedJobs((prev) => (isSaved ? [...prev, jobId] : prev.filter((id) => id !== jobId)))
+      toast.error("Failed to update saved status")
+    }
   }
 
   const formatDate = (dateString: string) => {

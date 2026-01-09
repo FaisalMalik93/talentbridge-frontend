@@ -69,6 +69,34 @@ class JobsService {
   async getApplicationStatus(jobId: string) {
     return await apiClient.get<{ has_applied: boolean; application_id?: string; status?: string }>(`/api/jobs/${jobId}/application-status`);
   }
+
+  /**
+   * Save a job
+   */
+  async saveJob(jobId: string) {
+    return await apiClient.post<{ message: string; saved: boolean }>(`/api/jobs/${jobId}/save`, {});
+  }
+
+  /**
+   * Unsave a job
+   */
+  async unsaveJob(jobId: string) {
+    return await apiClient.delete<{ message: string; saved: boolean }>(`/api/jobs/${jobId}/save`);
+  }
+
+  /**
+   * Get saved jobs
+   */
+  async getSavedJobs() {
+    return await apiClient.get<any[]>('/api/jobs/saved/my-saved-jobs');
+  }
+
+  /**
+   * Check saved status
+   */
+  async checkSavedStatus(jobId: string) {
+    return await apiClient.get<{ saved: boolean }>(`/api/jobs/${jobId}/save/status`);
+  }
 }
 
 export const jobsService = new JobsService();

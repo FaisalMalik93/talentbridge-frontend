@@ -31,7 +31,8 @@ import {
   Search,
   Building,
   LayoutDashboard,
-  Menu
+  Menu,
+  Heart
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -82,17 +83,29 @@ export function Header() {
 
         {isAuthenticated && user?.role === 'user' && (
           <>
+            <Link href="/candidate/dashboard" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Dashboard</span>
+            </Link>
             <Link href="/cv-analysis" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
               <FileText className="w-4 h-4" />
               <span>CV Analysis</span>
+            </Link>
+            <Link href="/candidate/ranked-cvs" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
+              <TrendingUp className="w-4 h-4" />
+              <span>Ranked CV List</span>
             </Link>
             <Link href="/candidate/applications" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
               <Briefcase className="w-4 h-4" />
               <span>My Applications</span>
             </Link>
             <Link href="/candidate/saved-jobs" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
-              <TrendingUp className="w-4 h-4" />
+              <Heart className="w-4 h-4" />
               <span>Saved Jobs</span>
+            </Link>
+            <Link href="/candidate/interviews" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
+              <Briefcase className="w-4 h-4" />
+              <span>Interviews</span>
             </Link>
           </>
         )}
