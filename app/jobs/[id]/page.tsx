@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/auth-context"
 export default function JobDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user } = useAuth()
 
     const [job, setJob] = useState<Job | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -140,13 +140,22 @@ export default function JobDetailsPage() {
                     </div>
 
                     <div className="flex flex-col gap-3 min-w-[200px]">
-                        <Button
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6 disabled:opacity-70 disabled:cursor-not-allowed"
-                            onClick={handleApply}
-                            disabled={!job.is_active || applicationStatus?.has_applied}
-                        >
-                            {applicationStatus?.has_applied ? "Already Applied" : "Apply Now"}
-                        </Button>
+                        {isAuthenticated && user?.role !== 'user' ? (
+                            <Button
+                                className="w-full bg-gray-600 cursor-not-allowed text-lg py-6"
+                                disabled
+                            >
+                                Job Seekers Only
+                            </Button>
+                        ) : (
+                            <Button
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6 disabled:opacity-70 disabled:cursor-not-allowed"
+                                onClick={handleApply}
+                                disabled={!job.is_active || applicationStatus?.has_applied}
+                            >
+                                {applicationStatus?.has_applied ? "Already Applied" : "Apply Now"}
+                            </Button>
+                        )}
                         <div className="flex justify-center">
                             <Badge variant={job.is_active ? "default" : "secondary"} className={job.is_active ? "bg-green-600" : "bg-yellow-600"}>
                                 {job.is_active ? "Accepting Applications" : "Closed"}

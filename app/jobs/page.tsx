@@ -130,7 +130,7 @@ const FilterPanel = ({
 );
 
 export default function JobsPage() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -562,11 +562,17 @@ export default function JobsPage() {
                                 </Button>
                               </Link>
                               {isAuthenticated ? (
-                                <Link href={`/jobs/${job.id}/apply`}>
-                                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                                user?.role === 'user' ? (
+                                  <Link href={`/jobs/${job.id}/apply`}>
+                                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                                      Apply Now
+                                    </Button>
+                                  </Link>
+                                ) : (
+                                  <Button size="sm" disabled className="bg-gray-600 cursor-not-allowed">
                                     Apply Now
                                   </Button>
-                                </Link>
+                                )
                               ) : (
                                 <Button
                                   size="sm"
