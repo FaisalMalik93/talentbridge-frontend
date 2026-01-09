@@ -256,14 +256,14 @@ export function Header() {
 
                 {user?.role === 'user' && (
                   <>
-                    <DropdownMenuItem className="hover:bg-gray-700">
-                      <Link href="/candidate/dashboard" className="flex items-center w-full">
+                    <DropdownMenuItem className="hover:bg-gray-700" asChild>
+                      <Link href="/candidate/dashboard" className="flex items-center w-full cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         <span>My Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-gray-700">
-                      <Link href="/candidate/profile" className="flex items-center w-full">
+                    <DropdownMenuItem className="hover:bg-gray-700" asChild>
+                      <Link href="/candidate/profile" className="flex items-center w-full cursor-pointer">
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Profile Settings</span>
                       </Link>
@@ -273,14 +273,14 @@ export function Header() {
 
                 {user?.role === 'employer' && (
                   <>
-                    <DropdownMenuItem className="hover:bg-gray-700">
-                      <Link href="/dashboard" className="flex items-center w-full">
+                    <DropdownMenuItem className="hover:bg-gray-700" asChild>
+                      <Link href="/dashboard" className="flex items-center w-full cursor-pointer">
                         <TrendingUp className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-gray-700">
-                      <Link href="/post-job" className="flex items-center w-full">
+                    <DropdownMenuItem className="hover:bg-gray-700" asChild>
+                      <Link href="/post-job" className="flex items-center w-full cursor-pointer">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         <span>Post New Job</span>
                       </Link>
@@ -289,8 +289,8 @@ export function Header() {
                 )}
 
                 {user?.role === 'admin' && (
-                  <DropdownMenuItem className="hover:bg-gray-700">
-                    <Link href="/analytics" className="flex items-center w-full">
+                  <DropdownMenuItem className="hover:bg-gray-700" asChild>
+                    <Link href="/analytics" className="flex items-center w-full cursor-pointer">
                       <TrendingUp className="mr-2 h-4 w-4" />
                       <span>Admin Panel</span>
                     </Link>
