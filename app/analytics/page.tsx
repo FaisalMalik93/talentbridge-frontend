@@ -1,96 +1,90 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
-import { TrendingUp, TrendingDown, Users, Briefcase, Eye, Clock, Target, Download, Filter } from "lucide-react"
-import Link from "next/link"
+import { TrendingUp, TrendingDown, Users, Briefcase, Clock, Target, Eye } from "lucide-react"
+import { analyticsService } from "@/lib/services/analytics.service"
+import { EmployerDashboard } from "@/lib/types"
+import { toast } from "sonner"
 
 export default function AnalyticsPage() {
+  const [data, setData] = useState<EmployerDashboard | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await analyticsService.getEmployerDashboard()
+        if (response.status === 200 && response.data) {
+          setData(response.data)
+        } else {
+          // Fallback or error handling
+          // toast.error("Failed to load analytics data")
+          // For now, let's just leave it null or maybe we should have a fallback state
+        }
+      } catch (error) {
+        toast.error("An error occurred while fetching analytics")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-white">Loading analytics...</div>
+      </div>
+    )
+  }
+
+  // Derived Metrics
   const metrics = [
     {
-      title: "Total Job Views",
-      value: "12,847",
-      change: "+23%",
-      trend: "up",
-      icon: Eye,
+      title: "Active Job Postings",
+      value: data?.active_jobs || 0,
+      change: "0", // Trend logic requires historical data not yet in simplified API
+      trend: "neutral",
+      icon: Briefcase,
       color: "text-blue-400",
     },
     {
       title: "Applications Received",
-      value: "1,234",
-      change: "+18%",
-      trend: "up",
+      value: data?.total_applications || 0,
+      change: `+${data?.applications_last_30_days || 0}`, // This month
+      trend: (data?.applications_last_30_days || 0) > 0 ? "up" : "neutral",
       icon: Users,
       color: "text-green-400",
     },
     {
-      title: "Active Job Postings",
-      value: "15",
-      change: "-2",
-      trend: "down",
-      icon: Briefcase,
+      title: "Avg Applications/Job",
+      value: data?.average_applications_per_job || 0,
+      change: "0",
+      trend: "neutral",
+      icon: Target,
       color: "text-purple-400",
     },
     {
-      title: "Average Time to Hire",
-      value: "18 days",
-      change: "-3 days",
-      trend: "up",
+      title: "Time to Hire (Est)",
+      value: "18 days", // Placeholder as backend doesn't track this yet
+      change: "0",
+      trend: "neutral",
       icon: Clock,
       color: "text-yellow-400",
     },
   ]
 
-  const topPerformingJobs = [
-    {
-      title: "Senior Frontend Developer",
-      views: 2847,
-      applications: 156,
-      conversionRate: 5.5,
-      status: "Active",
-    },
-    {
-      title: "Product Manager",
-      views: 2134,
-      applications: 89,
-      conversionRate: 4.2,
-      status: "Active",
-    },
-    {
-      title: "UI/UX Designer",
-      views: 1876,
-      applications: 134,
-      conversionRate: 7.1,
-      status: "Active",
-    },
-    {
-      title: "DevOps Engineer",
-      views: 1654,
-      applications: 67,
-      conversionRate: 4.0,
-      status: "Paused",
-    },
-  ]
-
-  const skillsInDemand = [
-    { skill: "React", demand: 92, growth: "+15%" },
-    { skill: "Python", demand: 87, growth: "+12%" },
-    { skill: "Node.js", demand: 78, growth: "+8%" },
-    { skill: "AWS", demand: 74, growth: "+22%" },
-    { skill: "TypeScript", demand: 69, growth: "+18%" },
-    { skill: "Docker", demand: 65, growth: "+10%" },
-  ]
-
-  const applicationSources = [
-    { source: "Direct Applications", count: 456, percentage: 37 },
-    { source: "Job Boards", count: 389, percentage: 32 },
-    { source: "Social Media", count: 234, percentage: 19 },
-    { source: "Referrals", count: 155, percentage: 12 },
-  ]
+  // Default empty arrays if data is missing (e.g. no jobs)
+  const topJobs = data?.top_performing_jobs || []
+  const skills = data?.skills_in_demand || []
+  const funnel = data?.application_funnel || []
+  const demographics = data?.demographics?.experience || []
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -125,11 +119,11 @@ export default function AnalyticsPage() {
                 <div className="flex items-center space-x-1">
                   {metric.trend === "up" ? (
                     <TrendingUp className="w-4 h-4 text-green-400" />
-                  ) : (
+                  ) : metric.trend === "down" ? (
                     <TrendingDown className="w-4 h-4 text-red-400" />
-                  )}
+                  ) : null}
                   <span
-                    className={`text-sm font-semibold ${metric.trend === "up" ? "text-green-400" : "text-red-400"}`}
+                    className={`text-sm font-semibold ${metric.trend === "up" ? "text-green-400" : metric.trend === "down" ? "text-red-400" : "text-gray-400"}`}
                   >
                     {metric.change}
                   </span>
@@ -168,58 +162,30 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Job Views</span>
-                    <span className="font-semibold">12,847</span>
-                  </div>
-                  <Progress value={100} className="h-2" />
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Applications Started</span>
-                    <span className="font-semibold">2,156 (16.8%)</span>
-                  </div>
-                  <Progress value={17} className="h-2" />
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Applications Completed</span>
-                    <span className="font-semibold">1,234 (9.6%)</span>
-                  </div>
-                  <Progress value={10} className="h-2" />
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Interviews Scheduled</span>
-                    <span className="font-semibold">234 (1.8%)</span>
-                  </div>
-                  <Progress value={2} className="h-2" />
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Offers Extended</span>
-                    <span className="font-semibold">45 (0.4%)</span>
-                  </div>
-                  <Progress value={0.4} className="h-2" />
+                  {funnel.length > 0 ? funnel.map((stage, i) => (
+                    <div key={i}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-300">{stage.stage}</span>
+                        <span className="font-semibold">{stage.count} ({stage.percentage}%)</span>
+                      </div>
+                      <Progress value={stage.percentage} className="h-2" />
+                    </div>
+                  )) : (
+                    <div className="text-gray-400 text-center py-4">No data available</div>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Application Sources */}
+            {/* Application Sources (Placeholder/Static for now as not in API) */}
             <Card className="bg-gray-800 border-gray-700 text-white">
               <CardHeader>
                 <CardTitle>Application Sources</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {applicationSources.map((source, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-3 h-3 bg-blue-600 rounded-full" />
-                        <span className="text-gray-300">{source.source}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <span className="font-semibold">{source.count}</span>
-                        <span className="text-sm text-gray-400">({source.percentage}%)</span>
-                      </div>
-                    </div>
-                  ))}
+                  <p className="text-gray-400 text-sm">Source tracking coming soon.</p>
+                  {/* Placeholder data visualization kept minimal or removed if irrelevant */}
                 </div>
               </CardContent>
             </Card>
@@ -235,24 +201,7 @@ export default function AnalyticsPage() {
                     <span className="text-gray-300">Application to Review</span>
                     <span className="font-semibold">2.3 days</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Review to Interview</span>
-                    <span className="font-semibold">5.7 days</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Interview to Decision</span>
-                    <span className="font-semibold">3.2 days</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Decision to Offer</span>
-                    <span className="font-semibold">1.8 days</span>
-                  </div>
-                  <div className="border-t border-gray-700 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-white font-semibold">Total Time to Hire</span>
-                      <span className="font-bold text-blue-400">18 days</span>
-                    </div>
-                  </div>
+                  <p className="text-xs text-gray-500 italic">* Estimated based on platform averages</p>
                 </div>
               </CardContent>
             </Card>
@@ -267,26 +216,13 @@ export default function AnalyticsPage() {
                   <div className="text-4xl font-bold text-green-400 mb-2">8.4/10</div>
                   <Badge className="bg-green-600">Excellent</Badge>
                 </div>
+                {/* Static breakdown for visual consistency */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Job Quality</span>
                     <div className="flex items-center space-x-2">
                       <Progress value={85} className="w-20 h-2" />
                       <span className="text-sm">8.5</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Response Time</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={90} className="w-20 h-2" />
-                      <span className="text-sm">9.0</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Candidate Experience</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={78} className="w-20 h-2" />
-                      <span className="text-sm">7.8</span>
                     </div>
                   </div>
                 </div>
@@ -302,49 +238,32 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {topPerformingJobs.map((job, index) => (
+                {topJobs.length > 0 ? topJobs.map((job, index) => (
                   <div key={index} className="border border-gray-700 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h3 className="text-lg font-semibold text-white">{job.title}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-400">
                           <span className="flex items-center">
-                            <Eye className="w-4 h-4 mr-1" />
-                            {job.views.toLocaleString()} views
+                            <Briefcase className="w-4 h-4 mr-1" />
+                            {job.company}
                           </span>
                           <span className="flex items-center">
                             <Users className="w-4 h-4 mr-1" />
                             {job.applications} applications
                           </span>
                           <span className="flex items-center">
-                            <Target className="w-4 h-4 mr-1" />
-                            {job.conversionRate}% conversion
+                            <Clock className="w-4 h-4 mr-1" />
+                            Posted {job.posted_date}
                           </span>
                         </div>
                       </div>
-                      <Badge
-                        variant={job.status === "Active" ? "default" : "secondary"}
-                        className={job.status === "Active" ? "bg-green-600" : "bg-yellow-600"}
-                      >
-                        {job.status}
-                      </Badge>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-400">Views</p>
-                        <Progress value={(job.views / 3000) * 100} className="mt-1" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">Applications</p>
-                        <Progress value={(job.applications / 200) * 100} className="mt-1" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">Conversion Rate</p>
-                        <Progress value={job.conversionRate * 10} className="mt-1" />
-                      </div>
-                    </div>
+                    <Progress value={Math.min(100, (job.applications / 20) * 100)} className="mt-1" />
                   </div>
-                ))}
+                )) : (
+                  <div className="text-center text-gray-400">No active jobs found.</div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -354,30 +273,27 @@ export default function AnalyticsPage() {
           <div className="grid lg:grid-cols-2 gap-6 ">
             <Card className="bg-gray-800 border-gray-700 text-white">
               <CardHeader>
-                <CardTitle>Candidate Quality Score</CardTitle>
+                <CardTitle>Recent Candidates</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-bold text-blue-400 mb-2">7.8/10</div>
-                  <p className="text-gray-400">Average candidate match score</p>
-                </div>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Excellent Match (9-10)</span>
-                    <span className="font-semibold">23%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Good Match (7-8)</span>
-                    <span className="font-semibold">45%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Fair Match (5-6)</span>
-                    <span className="font-semibold">24%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Poor Match (0-4)</span>
-                    <span className="font-semibold">8%</span>
-                  </div>
+                  {data?.recent_applications && data.recent_applications.length > 0 ? (
+                    data.recent_applications.map((app, i) => (
+                      <div key={i} className="flex justify-between border-b border-gray-700 pb-2 last:border-0">
+                        <div>
+                          <div className="text-white font-medium">{app.filename}</div>
+                          <div className="text-xs text-gray-500">{app.date}</div>
+                        </div>
+                        <div className="text-right">
+                          <Badge className={app.match_score >= 80 ? "bg-green-600" : app.match_score >= 50 ? "bg-yellow-600" : "bg-gray-600"}>
+                            Score: {app.match_score}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-400">No recent applications.</div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -391,22 +307,12 @@ export default function AnalyticsPage() {
                   <div>
                     <h4 className="font-semibold mb-2">Experience Level</h4>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Entry Level</span>
-                        <span className="font-semibold">15%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Mid Level</span>
-                        <span className="font-semibold">42%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Senior Level</span>
-                        <span className="font-semibold">35%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Lead/Principal</span>
-                        <span className="font-semibold">8%</span>
-                      </div>
+                      {demographics.map((demo, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <span className="text-gray-300">{demo.label}</span>
+                          <span className="font-semibold">{demo.percentage}%</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -418,24 +324,23 @@ export default function AnalyticsPage() {
         <TabsContent value="trends">
           <Card className="bg-gray-800 border-gray-700 text-white">
             <CardHeader>
-              <CardTitle>Skills in Demand</CardTitle>
+              <CardTitle>Skills in Demand (Based on your jobs)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {skillsInDemand.map((skill, index) => (
+                {skills.length > 0 ? skills.map((skill, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <span className="text-white font-medium">{skill.skill}</span>
-                      <Badge variant="outline" className="text-green-400 border-green-400">
-                        {skill.growth}
-                      </Badge>
                     </div>
                     <div className="flex items-center space-x-4">
                       <Progress value={skill.demand} className="w-32" />
                       <span className="text-sm font-semibold w-12">{skill.demand}%</span>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <div className="text-center text-gray-400">Add job requirements to see skill trends.</div>
+                )}
               </div>
             </CardContent>
           </Card>

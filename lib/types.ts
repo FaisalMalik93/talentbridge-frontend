@@ -190,6 +190,22 @@ export interface EmployerDashboard {
     date: string;
   }>;
   applications_last_30_days: number;
+  skills_in_demand: Array<{
+    skill: string;
+    demand: number;
+    growth: string;
+  }>;
+  application_funnel: Array<{
+    stage: string;
+    count: number;
+    percentage: number;
+  }>;
+  demographics: {
+    experience: Array<{
+      label: string;
+      percentage: number;
+    }>;
+  };
 }
 
 export interface AdminDashboard {
