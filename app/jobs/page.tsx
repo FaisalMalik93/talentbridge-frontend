@@ -11,7 +11,7 @@ import { Search, MapPin, Clock, DollarSign, Filter, Heart, Share2, Menu } from "
 import Link from "next/link"
 import { apiClient } from "@/lib/api-client"
 import { useAuth } from "@/contexts/auth-context"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { COUNTRIES, JOB_TYPES } from "@/lib/constants"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import jobsService from "@/lib/services/jobs.service"
@@ -132,6 +132,8 @@ const FilterPanel = ({
 export default function JobsPage() {
   const { isAuthenticated } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [savedJobs, setSavedJobs] = useState<string[]>([])
   const [jobs, setJobs] = useState<Job[]>([])
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([])
@@ -147,11 +149,20 @@ export default function JobsPage() {
   const [selectedExperience, setSelectedExperience] = useState<string[]>([])
 
   useEffect(() => {
+    // Initialize from URL params
+    const query = searchParams.get("search")
+    const location = searchParams.get("location")
+    const type = searchParams.get("type")
+
+    if (query) setSearchQuery(query)
+    if (location) setSelectedCountry(location === "remote" ? "all" : location) // Handle 'remote' specific mapping if needed, or just pass through
+    if (type) setSelectedJobTypes([type])
+
     fetchJobs()
     if (isAuthenticated) {
       fetchSavedStatus()
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, searchParams])
 
   useEffect(() => {
     applyFilters()
@@ -191,7 +202,7 @@ export default function JobsPage() {
         (job) =>
           job.title.toLowerCase().includes(query) ||
           job.company.toLowerCase().includes(query) ||
-          job.description.toLowerCase().includes(query) ||
+          // job.description.toLowerCase().includes(query) || // Removed to reduce noise
           job.requirements.some((req) => req.toLowerCase().includes(query))
       )
     }

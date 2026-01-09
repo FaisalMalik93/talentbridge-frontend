@@ -1,5 +1,7 @@
-'use client';
+"use client"
 
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -10,8 +12,23 @@ import { Search, MapPin, Briefcase, Users, CheckCircle, Zap, Shield, Clock, Buil
 import Link from "next/link"
 import { Header } from "@/components/navigation/header"
 import { Footer } from "@/components/layout/footer"
+import { COUNTRIES } from "@/lib/constants"
 
 export default function HomePage() {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState("")
+  const [location, setLocation] = useState("")
+  const [jobType, setJobType] = useState("")
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    if (searchQuery) params.set("search", searchQuery)
+    if (location && location !== "all") params.set("location", location)
+    if (jobType && jobType !== "all") params.set("type", jobType)
+
+    router.push(`/jobs?${params.toString()}`)
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Header />
@@ -35,38 +52,50 @@ export default function HomePage() {
                 <Input
                   placeholder="Job title or keyword"
                   className="pl-10 h-12 text-gray-900 border-0 focus:ring-2 focus:ring-blue-500"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
               </div>
               <div className="flex-1 relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Select>
+                <Select value={location} onValueChange={setLocation}>
                   <SelectTrigger className="pl-10 h-12 text-gray-900 border-0">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="all">Any Location</SelectItem>
                     <SelectItem value="remote">Remote</SelectItem>
-                    <SelectItem value="us">United States</SelectItem>
-                    <SelectItem value="uk">United Kingdom</SelectItem>
-                    <SelectItem value="ca">Canada</SelectItem>
+                    {COUNTRIES.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex-1">
-                <Select>
+                <Select value={jobType} onValueChange={setJobType}>
                   <SelectTrigger className="h-12 text-gray-900 border-0">
                     <SelectValue placeholder="Job Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="full-time">Full Time</SelectItem>
-                    <SelectItem value="part-time">Part Time</SelectItem>
-                    <SelectItem value="contract">Contract</SelectItem>
-                    <SelectItem value="freelance">Freelance</SelectItem>
+                    <SelectItem value="all">Any Type</SelectItem>
+                    <SelectItem value="Full-time">Full Time</SelectItem>
+                    <SelectItem value="Part-time">Part Time</SelectItem>
+                    <SelectItem value="Contract">Contract</SelectItem>
+                    <SelectItem value="Freelance">Freelance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Link href="/jobs" className="w-full md:w-auto">
-                <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-8 w-full md:w-auto">Find job openings now</Button>
-              </Link>
+              <div className="w-full md:w-auto">
+                <Button
+                  className="bg-blue-600 hover:bg-blue-700 h-12 px-8 w-full md:w-auto"
+                  onClick={handleSearch}
+                >
+                  Find job openings now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -401,3 +430,4 @@ export default function HomePage() {
     </div>
   )
 }
+
