@@ -1,17 +1,19 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, MapPin, Users, Star, Building, Filter, ExternalLink } from "lucide-react"
+import { Search, MapPin, Users, Star, Building, Filter, ExternalLink, Loader2 } from "lucide-react"
 import Link from "next/link"
+import companiesService, { type Company } from "@/lib/services/companies.service"
+import { toast } from "sonner"
 
 export default function CompaniesPage() {
-  const [followedCompanies, setFollowedCompanies] = useState<number[]>([])
+  const [followedCompanies, setFollowedCompanies] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState("")
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
@@ -19,7 +21,34 @@ export default function CompaniesPage() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([])
   const [minRating, setMinRating] = useState<number | null>(null)
 
-  const toggleFollowCompany = (companyId: number) => {
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchCompanies()
+  }, [])
+
+  const fetchCompanies = async () => {
+    try {
+      setLoading(true)
+      const response = await companiesService.getCompanies()
+
+      if (response.error) {
+        toast.error(response.error)
+        return
+      }
+
+      if (response.data) {
+        setCompanies(response.data)
+      }
+    } catch (error) {
+      toast.error("Failed to fetch companies")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const toggleFollowCompany = (companyId: string) => {
     setFollowedCompanies((prev) =>
       prev.includes(companyId) ? prev.filter((id) => id !== companyId) : [...prev, companyId],
     )
@@ -32,121 +61,6 @@ export default function CompaniesPage() {
       setFilters([...currentFilters, value])
     }
   }
-
-  const companies = [
-    {
-      id: 1,
-      name: "Systems Limited",
-      logo: "💼",
-      industry: "Technology",
-      size: "1000-5000",
-      location: "Lahore, Pakistan",
-      rating: 4.7,
-      reviews: 342,
-      openJobs: 18,
-      description: "Pakistan's leading IT services company providing enterprise solutions, software development, and digital transformation services globally.",
-      benefits: ["Health Insurance", "Provident Fund", "Annual Bonus", "Training Programs"],
-      techStack: ["Java", ".NET", "SAP", "Oracle", "React"],
-    },
-    {
-      id: 2,
-      name: "NetSol Technologies",
-      logo: "🌐",
-      industry: "Software Solutions",
-      size: "500-1000",
-      location: "Lahore, Pakistan",
-      rating: 4.5,
-      reviews: 198,
-      openJobs: 14,
-      description: "Global provider of IT solutions and services with expertise in leasing and finance applications for Fortune 500 companies.",
-      benefits: ["Medical Insurance", "Flexible Hours", "Stock Options", "Performance Bonuses"],
-      techStack: [".NET", "Java", "Angular", "Azure", "SQL Server"],
-    },
-    {
-      id: 3,
-      name: "Arbisoft",
-      logo: "🤖",
-      industry: "AI/ML",
-      size: "200-500",
-      location: "Lahore, Pakistan",
-      rating: 4.8,
-      reviews: 156,
-      openJobs: 12,
-      description: "AI and data science company partnering with global tech leaders, building cutting-edge machine learning solutions.",
-      benefits: ["Remote Work", "Health Insurance", "Learning Budget", "Flexible Schedule"],
-      techStack: ["Python", "TensorFlow", "React", "Django", "AWS"],
-    },
-    {
-      id: 4,
-      name: "TPS (The Professional Services)",
-      logo: "⚙️",
-      industry: "ERP Solutions",
-      size: "100-500",
-      location: "Karachi, Pakistan",
-      rating: 4.4,
-      reviews: 89,
-      openJobs: 10,
-      description: "Leading ERP solutions provider in Pakistan, specializing in SAP implementation and business process optimization.",
-      benefits: ["Health Insurance", "Annual Increments", "Training & Certifications", "Team Events"],
-      techStack: ["SAP", "ABAP", "Fiori", "HANA", "Cloud Platform"],
-    },
-    {
-      id: 5,
-      name: "Zameen.com",
-      logo: "🏢",
-      industry: "PropTech",
-      size: "500-1000",
-      location: "Lahore, Pakistan",
-      rating: 4.6,
-      reviews: 245,
-      openJobs: 15,
-      description: "Pakistan's leading property portal revolutionizing real estate with technology-driven solutions.",
-      benefits: ["Health Insurance", "Paid Leaves", "Performance Bonuses", "Career Growth"],
-      techStack: ["React", "Node.js", "MongoDB", "AWS", "Docker"],
-    },
-    {
-      id: 6,
-      name: "Afiniti",
-      logo: "🧠",
-      industry: "AI Technology",
-      size: "200-500",
-      location: "Islamabad, Pakistan",
-      rating: 4.9,
-      reviews: 134,
-      openJobs: 11,
-      description: "Global AI company using behavioral pairing to transform customer interactions for Fortune 500 enterprises.",
-      benefits: ["Competitive Salary", "Stock Options", "Health Insurance", "Professional Development"],
-      techStack: ["Python", "Java", "Machine Learning", "Big Data", "Kubernetes"],
-    },
-    {
-      id: 7,
-      name: "Inbox Business Technologies",
-      logo: "📱",
-      industry: "Mobile Solutions",
-      size: "50-200",
-      location: "Islamabad, Pakistan",
-      rating: 4.3,
-      reviews: 67,
-      openJobs: 8,
-      description: "Mobile-first technology company delivering innovative apps and digital solutions for businesses across Pakistan.",
-      benefits: ["Flexible Hours", "Health Insurance", "Learning Opportunities", "Modern Office"],
-      techStack: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"],
-    },
-    {
-      id: 8,
-      name: "Techlogix",
-      logo: "🔧",
-      industry: "Technology",
-      size: "500-1000",
-      location: "Karachi, Pakistan",
-      rating: 4.5,
-      reviews: 178,
-      openJobs: 13,
-      description: "IT solutions and consulting firm providing enterprise technology services, cloud solutions, and digital transformation.",
-      benefits: ["Health Insurance", "Provident Fund", "Annual Bonus", "Training Programs"],
-      techStack: ["Java", "Python", "AWS", "Docker", "Microservices"],
-    },
-  ]
 
   // Helper function to match company size with filter ranges
   const matchesSize = (companySize: string, filterSize: string): boolean => {
@@ -345,7 +259,11 @@ export default function CompaniesPage() {
 
           {/* Company Cards */}
           <div className="space-y-6">
-            {filteredAndSortedCompanies.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+              </div>
+            ) : filteredAndSortedCompanies.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-400 text-lg">No companies found matching your criteria.</p>
                 <Button
@@ -369,15 +287,21 @@ export default function CompaniesPage() {
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-4">
-                        <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-3xl">
-                          {company.logo}
+                        <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-3xl overflow-hidden">
+                          {company.logo.startsWith('http') ? (
+                            <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-3xl">{company.logo}</span>
+                          )}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
                             <h3 className="text-xl font-semibold text-white">{company.name}</h3>
-                            <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                              {company.industry}
-                            </Badge>
+                            {company.industry && (
+                              <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
+                                {company.industry}
+                              </Badge>
+                            )}
                           </div>
                           <div className="flex items-center space-x-4 text-sm text-gray-400 mb-3">
                             <span className="flex items-center">
@@ -393,39 +317,43 @@ export default function CompaniesPage() {
                               {company.rating} ({company.reviews} reviews)
                             </span>
                           </div>
-                          <p className="text-gray-300 mb-4">{company.description}</p>
+                          <p className="text-gray-300 mb-4 line-clamp-2">{company.description}</p>
 
                           {/* Benefits */}
-                          <div className="mb-4">
-                            <p className="text-sm text-gray-400 mb-2">Benefits:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {company.benefits.map((benefit) => (
-                                <Badge
-                                  key={benefit}
-                                  variant="outline"
-                                  className="text-xs border-green-600 text-green-400"
-                                >
-                                  {benefit}
-                                </Badge>
-                              ))}
+                          {company.benefits && company.benefits.length > 0 && (
+                            <div className="mb-4">
+                              <p className="text-sm text-gray-400 mb-2">Benefits:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {company.benefits.map((benefit, i) => (
+                                  <Badge
+                                    key={i}
+                                    variant="outline"
+                                    className="text-xs border-green-600 text-green-400"
+                                  >
+                                    {benefit}
+                                  </Badge>
+                                ))}
+                              </div>
                             </div>
-                          </div>
+                          )}
 
                           {/* Tech Stack */}
-                          <div>
-                            <p className="text-sm text-gray-400 mb-2">Tech Stack:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {company.techStack.map((tech) => (
-                                <Badge
-                                  key={tech}
-                                  variant="secondary"
-                                  className="text-xs bg-purple-600/20 text-purple-300"
-                                >
-                                  {tech}
-                                </Badge>
-                              ))}
+                          {company.techStack && company.techStack.length > 0 && (
+                            <div>
+                              <p className="text-sm text-gray-400 mb-2">Tech Stack:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {company.techStack.map((tech, i) => (
+                                  <Badge
+                                    key={i}
+                                    variant="secondary"
+                                    className="text-xs bg-purple-600/20 text-purple-300"
+                                  >
+                                    {tech}
+                                  </Badge>
+                                ))}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                       <div className="text-right">
@@ -448,13 +376,15 @@ export default function CompaniesPage() {
                         >
                           {followedCompanies.includes(company.id) ? "Following" : "Follow"}
                         </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-black hover:bg-gray-700">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white hover:bg-gray-700">
                           <ExternalLink className="w-4 h-4 mr-1" />
                           Visit Website
                         </Button>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                          View Jobs ({company.openJobs})
-                        </Button>
+                        <Link href={`/jobs?employer_id=${company.id}`}>
+                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                            View Jobs ({company.openJobs})
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </CardContent>
@@ -463,12 +393,7 @@ export default function CompaniesPage() {
             )}
           </div>
 
-          {/* Load More */}
-          <div className="text-center mt-8">
-            <Button variant="outline" className="border-gray-600 text-black hover:bg-gray-800">
-              Load More Companies
-            </Button>
-          </div>
+
         </div>
       </div>
     </div>

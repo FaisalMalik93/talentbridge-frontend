@@ -147,16 +147,19 @@ export default function JobsPage() {
   const [selectedCountry, setSelectedCountry] = useState("")
   const [selectedSalaryRange, setSelectedSalaryRange] = useState("")
   const [selectedExperience, setSelectedExperience] = useState<string[]>([])
+  const [employerId, setEmployerId] = useState<string | null>(null)
 
   useEffect(() => {
     // Initialize from URL params
     const query = searchParams.get("search")
     const location = searchParams.get("location")
     const type = searchParams.get("type")
+    const empId = searchParams.get("employer_id")
 
     if (query) setSearchQuery(query)
-    if (location) setSelectedCountry(location === "remote" ? "all" : location) // Handle 'remote' specific mapping if needed, or just pass through
+    if (location) setSelectedCountry(location === "remote" ? "all" : location)
     if (type) setSelectedJobTypes([type])
+    if (empId) setEmployerId(empId)
 
     fetchJobs()
     if (isAuthenticated) {
@@ -166,7 +169,7 @@ export default function JobsPage() {
 
   useEffect(() => {
     applyFilters()
-  }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedCountry, selectedSalaryRange, selectedExperience])
+  }, [jobs, searchQuery, sortBy, selectedJobTypes, selectedCountry, selectedSalaryRange, selectedExperience, employerId])
 
   const fetchSavedStatus = async () => {
     try {
@@ -195,6 +198,11 @@ export default function JobsPage() {
   const applyFilters = () => {
     let filtered = [...jobs]
 
+    // Employer filter
+    if (employerId) {
+      filtered = filtered.filter(job => job.employer_id === employerId)
+    }
+
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
@@ -202,7 +210,6 @@ export default function JobsPage() {
         (job) =>
           job.title.toLowerCase().includes(query) ||
           job.company.toLowerCase().includes(query) ||
-          // job.description.toLowerCase().includes(query) || // Removed to reduce noise
           job.requirements.some((req) => req.toLowerCase().includes(query))
       )
     }
