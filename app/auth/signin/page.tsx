@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useAuth } from "@/contexts/auth-context"
 import { toast } from "sonner"
 
@@ -65,10 +66,14 @@ export default function SignInPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center justify-center space-x-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">TB</span>
-            </div>
-            <span className="text-2xl font-bold">TalentBridge</span>
+            <Image
+              src="/logo-talentbridge.png"
+              alt="TalentBridge Logo"
+              width={180}
+              height={50}
+              className="h-14 w-auto rounded-lg object-contain"
+              priority
+            />
           </Link>
         </div>
 

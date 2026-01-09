@@ -30,7 +30,7 @@ class ApiClient {
    * Build headers with optional authorization
    */
   private getHeaders(includeAuth: boolean = true, isFormData: boolean = false): HeadersInit {
-    const headers: HeadersInit = {};
+    const headers: Record<string, string> = {};
 
     if (!isFormData) {
       headers['Content-Type'] = 'application/json';
@@ -42,6 +42,11 @@ class ApiClient {
         headers['Authorization'] = `Bearer ${token}`;
       }
     }
+
+    // Prevent caching for all API requests to ensure fresh data
+    headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    headers['Pragma'] = 'no-cache';
+    headers['Expires'] = '0';
 
     return headers;
   }
