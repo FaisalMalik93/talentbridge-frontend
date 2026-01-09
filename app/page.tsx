@@ -220,24 +220,20 @@ export default function HomePage() {
 
               {/* Filter Tags */}
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  UI Designer
-                </Badge>
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  Frontend
-                </Badge>
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  Senior Developer
-                </Badge>
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  Product
-                </Badge>
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  Marketing
-                </Badge>
-                <Badge variant="secondary" className="bg-blue-600/20 text-blue-300">
-                  Remote
-                </Badge>
+                {["UI Designer", "Frontend", "Senior Developer", "Product", "Marketing", "Remote"].map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="bg-blue-600/20 text-blue-300 cursor-pointer hover:bg-blue-600/30 transition-colors"
+                    onClick={() => {
+                      const params = new URLSearchParams()
+                      params.set("search", tag)
+                      router.push(`/jobs?${params.toString()}`)
+                    }}
+                  >
+                    {tag}
+                  </Badge>
+                ))}
               </div>
             </div>
           </div>
