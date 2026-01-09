@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 export function Footer() {
     return (
@@ -6,12 +7,18 @@ export function Footer() {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">TB</span>
+                        <Link href="/" className="inline-block">
+                            <div className="flex items-center space-x-2">
+                                <Image
+                                    src="/logo-talentbridge.png"
+                                    alt="TalentBridge Logo"
+                                    width={50}
+                                    height={50}
+                                    className="h-10 w-auto rounded-lg object-contain"
+                                />
+                                <span className="text-xl font-bold text-white">TalentBridge</span>
                             </div>
-                            <span className="text-xl font-bold text-white">TalentBridge</span>
-                        </div>
+                        </Link>
                         <p className="text-sm leading-relaxed">
                             AI-powered recruitment platform connecting talent with opportunities.
                             Streamline your hiring process or find your dream job today.
