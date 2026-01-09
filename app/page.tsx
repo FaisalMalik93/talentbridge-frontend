@@ -159,7 +159,7 @@ export default function HomePage() {
             <div className="bg-gray-800 rounded-xl p-6">
               <div className="flex flex-col md:flex-row flex-wrap gap-4 mb-6">
                 <Select>
-                  <SelectTrigger className="w-full md:w-40">
+                  <SelectTrigger className="w-full md:w-40 bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -169,7 +169,7 @@ export default function HomePage() {
                 </Select>
 
                 <Select>
-                  <SelectTrigger className="w-full md:w-40">
+                  <SelectTrigger className="w-full md:w-40 bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Experience" />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,7 +180,7 @@ export default function HomePage() {
                 </Select>
 
                 <Select>
-                  <SelectTrigger className="w-full md:w-40">
+                  <SelectTrigger className="w-full md:w-40 bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Salary Range" />
                   </SelectTrigger>
                   <SelectContent>
