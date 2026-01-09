@@ -12,7 +12,6 @@ import {
   Search,
   Filter,
   Star,
-  MapPin,
   Briefcase,
   GraduationCap,
   Mail,
@@ -24,6 +23,15 @@ import {
 import candidatesService, { type Candidate } from "@/lib/services/candidates.service"
 import { toast } from "sonner"
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 export default function CandidatesPage() {
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [candidates, setCandidates] = useState<Candidate[]>([])
@@ -33,8 +41,61 @@ export default function CandidatesPage() {
   const [sortBy, setSortBy] = useState<"match" | "recent" | "experience">("match")
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
+  // Action states
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [selectedCandidateDetails, setSelectedCandidateDetails] = useState<any>(null)
+  const [profileLoading, setProfileLoading] = useState(false)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+
   // Available skills for filtering (extracted from candidates)
   const [availableSkills, setAvailableSkills] = useState<string[]>([])
+
+  const handleViewProfile = async (candidateId: string) => {
+    setIsProfileOpen(true)
+    setProfileLoading(true)
+    try {
+      const response = await candidatesService.getCandidateById(candidateId)
+      if (response.data?.success && response.data?.candidate) {
+        setSelectedCandidateDetails(response.data.candidate)
+      } else {
+        toast.error("Failed to load candidate details")
+        setIsProfileOpen(false)
+      }
+    } catch (e) {
+      toast.error("Error fetching profile")
+      setIsProfileOpen(false)
+    } finally {
+      setProfileLoading(false)
+    }
+  }
+
+  const handleDownloadCV = async (candidateId: string, name: string, filename: string) => {
+    setActionLoading(candidateId)
+    try {
+      const response = await candidatesService.getCandidateById(candidateId)
+      if (response.data?.success && response.data?.candidate && response.data.candidate.cv_text) {
+        // Create blob from text
+        const element = document.createElement("a");
+        const file = new Blob([response.data.candidate.cv_text], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${name.replace(/\s+/g, '_')}_CV.txt`;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+        document.body.removeChild(element);
+        toast.success("CV downloaded")
+      } else {
+        toast.error("CV content not found")
+      }
+    } catch (e) {
+      toast.error("Failed to download CV")
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleContact = (email: string) => {
+    window.location.href = `mailto:${email}`
+  }
 
   useEffect(() => {
     fetchCandidates()
@@ -224,11 +285,8 @@ export default function CandidatesPage() {
                   {selectedCandidates.length} candidate{selectedCandidates.length > 1 ? "s" : ""} selected
                 </span>
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" className="border-blue-600 text-blue-300">
+                  <Button size="sm" variant="outline" className="border-blue-600 text-blue-300" onClick={() => window.location.href = `mailto:?bcc=${selectedCandidates.map(id => candidates.find(c => c.id === id)?.email).join(',')}`}>
                     Send Message
-                  </Button>
-                  <Button size="sm" variant="outline" className="border-blue-600 text-blue-300">
-                    Export CVs
                   </Button>
                   <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                     Schedule Interview
@@ -284,7 +342,7 @@ export default function CandidatesPage() {
                           onCheckedChange={() => toggleSelectCandidate(candidate.id)}
                           className="mt-1"
                         />
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold">
+                        <div className="min-w-[4rem] h-16 w-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold text-white">
                           {candidate.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1">
@@ -324,11 +382,6 @@ export default function CandidatesPage() {
                                   {typeof skill === 'string' ? skill : JSON.stringify(skill)}
                                 </Badge>
                               ))}
-                              {candidate.skills && candidate.skills.length > 8 && (
-                                <Badge variant="secondary" className="bg-gray-700 text-gray-300">
-                                  +{candidate.skills.length - 8} more
-                                </Badge>
-                              )}
                             </div>
                           </div>
 
@@ -358,19 +411,25 @@ export default function CandidatesPage() {
                         <span>{candidate.email}</span>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm" className="text-gray-400">
+                        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white" onClick={() => handleViewProfile(candidate.id)}>
                           <Eye className="w-4 h-4 mr-1" />
                           View Profile
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-gray-400">
-                          <Download className="w-4 h-4 mr-1" />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-400 hover:text-white"
+                          onClick={() => handleDownloadCV(candidate.id, candidate.name, candidate.cv_filename)}
+                          disabled={actionLoading === candidate.id}
+                        >
+                          {actionLoading === candidate.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Download className="w-4 h-4 mr-1" />}
                           Download CV
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleContact(candidate.email)}>
                           <MessageSquare className="w-4 h-4 mr-1" />
                           Message
                         </Button>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => handleContact(candidate.email)}>
                           <Mail className="w-4 h-4 mr-1" />
                           Contact
                         </Button>
@@ -383,6 +442,95 @@ export default function CandidatesPage() {
           )}
         </div>
       </div>
+
+      {/* Profile Dialog */}
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="max-w-3xl bg-gray-900 border-gray-700 text-white max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+              {selectedCandidateDetails ? (
+                <>
+                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-lg">
+                    {selectedCandidateDetails.name.charAt(0)}
+                  </div>
+                  {selectedCandidateDetails.name}
+                </>
+              ) : (
+                "Candidate Profile"
+              )}
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              {selectedCandidateDetails
+                ? `${selectedCandidateDetails.title} • ${selectedCandidateDetails.email}`
+                : "Loading details..."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {profileLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+            </div>
+          ) : selectedCandidateDetails ? (
+            <div className="space-y-6 mt-4">
+              {/* Summary */}
+              {selectedCandidateDetails.summary && (
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Professional Summary</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">{selectedCandidateDetails.summary}</p>
+                </div>
+              )}
+
+              {/* Skills */}
+              {selectedCandidateDetails.skills && selectedCandidateDetails.skills.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCandidateDetails.skills.map((skill: string, i: number) => (
+                      <Badge key={i} variant="outline" className="text-gray-300 border-gray-600">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Experience */}
+              <div>
+                <h3 className="text-lg font-semibold text-blue-400 mb-2">Experience</h3>
+                <div className="bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                    {typeof selectedCandidateDetails.experience === 'string'
+                      ? selectedCandidateDetails.experience
+                      : JSON.stringify(selectedCandidateDetails.experience, null, 2)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Education */}
+              {selectedCandidateDetails.education && (
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Education</h3>
+                  <div className="bg-gray-800 p-4 rounded-lg max-h-40 overflow-y-auto">
+                    <pre className="text-sm text-gray-300 whitespace-pre-wrap font-sans">
+                      {Array.isArray(selectedCandidateDetails.education)
+                        ? selectedCandidateDetails.education.map((e: any) => `${e.degree || ''} - ${e.institution || ''}`).join('\n')
+                        : JSON.stringify(selectedCandidateDetails.education, null, 2)
+                      }
+                    </pre>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end pt-4 gap-2">
+                <Button variant="outline" onClick={() => setIsProfileOpen(false)} className="border-gray-500 bg-gray-800 text-white hover:bg-gray-700">Close</Button>
+                <Button onClick={() => handleDownloadCV(selectedCandidateDetails!.id, selectedCandidateDetails!.name, "profile_cv.pdf")}>Download Full CV</Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-10 text-gray-400">Failed to load profile.</div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
