@@ -254,10 +254,10 @@ export default function RankedCVsPage() {
                                       Strengths
                                     </h4>
                                     <ul className="text-sm text-gray-300 space-y-1">
-                                      {cv.ranking_result.strengths.map((strength, idx) => (
+                                      {cv.ranking_result.strengths.map((strength: any, idx) => (
                                         <li key={idx} className="flex items-start gap-2">
                                           <span className="text-green-400 mt-1">•</span>
-                                          <span>{strength}</span>
+                                          <span>{typeof strength === 'string' ? strength : strength.improvement || JSON.stringify(strength)}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -272,10 +272,10 @@ export default function RankedCVsPage() {
                                       Areas to Improve
                                     </h4>
                                     <ul className="text-sm text-gray-300 space-y-1">
-                                      {cv.ranking_result.weaknesses.map((weakness, idx) => (
+                                      {cv.ranking_result.weaknesses.map((weakness: any, idx) => (
                                         <li key={idx} className="flex items-start gap-2">
                                           <span className="text-red-400 mt-1">•</span>
-                                          <span>{weakness}</span>
+                                          <span>{typeof weakness === 'string' ? weakness : weakness.improvement || JSON.stringify(weakness)}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -291,10 +291,20 @@ export default function RankedCVsPage() {
                                     Recommendations
                                   </h4>
                                   <ul className="text-sm text-gray-300 space-y-1">
-                                    {cv.ranking_result.recommendations.map((rec, idx) => (
+                                    {cv.ranking_result.recommendations.map((rec: any, idx) => (
                                       <li key={idx} className="flex items-start gap-2">
                                         <span className="text-blue-400 mt-1">•</span>
-                                        <span>{rec}</span>
+                                        <span>
+                                          {typeof rec === 'string'
+                                            ? rec
+                                            : (
+                                              <span className="flex flex-col gap-1">
+                                                {rec.category && <span className="font-semibold text-blue-300">{rec.category}:</span>}
+                                                <span>{rec.improvement || rec.action || JSON.stringify(rec)}</span>
+                                              </span>
+                                            )
+                                          }
+                                        </span>
                                       </li>
                                     ))}
                                   </ul>
@@ -332,11 +342,10 @@ export default function RankedCVsPage() {
                   {leaderboard.map((entry) => (
                     <div
                       key={entry.user_id}
-                      className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${
-                        entry.is_current_user
-                          ? "bg-blue-600/20 border border-blue-600/50"
-                          : "bg-gray-700/50 hover:bg-gray-700"
-                      }`}
+                      className={`flex items-center gap-4 p-4 rounded-lg transition-colors ${entry.is_current_user
+                        ? "bg-blue-600/20 border border-blue-600/50"
+                        : "bg-gray-700/50 hover:bg-gray-700"
+                        }`}
                     >
                       <div className="flex items-center justify-center w-12">
                         {getRankIcon(entry.rank)}
