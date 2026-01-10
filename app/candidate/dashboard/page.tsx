@@ -25,12 +25,16 @@ import Link from "next/link"
 import { authService } from "@/lib/services/auth.service"
 import type { User as UserType } from "@/lib/types"
 import { jobsService } from "@/lib/services/jobs.service"
+import interviewsService from "@/lib/services/interviews.service"
 import { toast } from "sonner"
 
 export default function CandidateDashboard() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null)
   const [profileCompletion] = useState(75)
   const [recentApplications, setRecentApplications] = useState<any[]>([])
+
+  const [upcomingInterviews, setUpcomingInterviews] = useState<any[]>([])
+  const [recommendedJobs, setRecommendedJobs] = useState<any[]>([])
 
   useEffect(() => {
     const user = authService.getUser()
@@ -42,9 +46,20 @@ export default function CandidateDashboard() {
         if (appsRes.data) {
           setRecentApplications(appsRes.data)
         }
+
+        const interviewsRes = await interviewsService.getMyInterviews()
+        if (interviewsRes.data) {
+          const upcoming = interviewsRes.data.filter((i: any) => i.status === 'Scheduled')
+          setUpcomingInterviews(upcoming)
+        }
+
+        const recommendedRes = await jobsService.getRecommendedJobs()
+        if (recommendedRes.data) {
+          setRecommendedJobs(recommendedRes.data)
+        }
+
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error)
-        // toast.error("Failed to load dashboard data")
       }
     }
 
@@ -53,138 +68,39 @@ export default function CandidateDashboard() {
     }
   }, [])
 
-  // TODO: Fetch real stats from backend
+  // Calculate real stats
   const stats = [
     {
-      title: "Profile Views",
-      value: "0",
-      change: "+0%",
-      icon: Eye,
+      title: "Applications Sent",
+      value: recentApplications.length.toString(),
+      change: recentApplications.length > 0 ? "Active" : "None",
+      icon: Briefcase,
       color: "text-blue-400",
     },
     {
-      title: "Applications Sent",
-      value: "0",
-      change: "+0",
-      icon: Briefcase,
-      color: "text-green-400",
-    },
-    {
-      title: "Saved Jobs",
-      value: "0",
-      change: "+0",
-      icon: Heart,
-      color: "text-purple-400",
-    },
-    {
       title: "Interview Invites",
-      value: "0",
-      change: "+0",
+      value: upcomingInterviews.length.toString(),
+      change: upcomingInterviews.length > 0 ? "Action Required" : "None",
       icon: Calendar,
       color: "text-yellow-400",
     },
+    {
+      title: "Saved Jobs",
+      value: "0", // Placeholder until saved jobs API is ready
+      change: "-",
+      icon: Heart,
+      color: "text-red-400",
+    },
+    {
+      title: "Profile Views", // Placeholder
+      value: "0",
+      change: "-",
+      icon: Eye,
+      color: "text-purple-400"
+    }
   ]
 
 
-
-  /* DUMMY DATA - COMMENTED OUT
-  const recentApplications = [
-    {
-      id: 1,
-      jobTitle: "Senior Frontend Developer",
-      company: "TechCorp Inc.",
-      appliedDate: "2024-01-15",
-      status: "Under Review",
-      salary: "$80k - $120k",
-      location: "Remote",
-      logo: "🚀",
-    },
-    {
-      id: 2,
-      jobTitle: "UI/UX Designer",
-      company: "DesignStudio",
-      appliedDate: "2024-01-12",
-      status: "Interview Scheduled",
-      salary: "$70k - $90k",
-      location: "New York, NY",
-      logo: "🎨",
-    },
-    {
-      id: 3,
-      jobTitle: "Product Manager",
-      company: "StartupXYZ",
-      appliedDate: "2024-01-10",
-      status: "Rejected",
-      salary: "$100k - $140k",
-      location: "San Francisco, CA",
-      logo: "📊",
-    },
-  ]
-  */
-
-  // TODO: Fetch real recommended jobs from backend
-  const recommendedJobs: any[] = []
-
-  /* DUMMY DATA - COMMENTED OUT
-  const recommendedJobs = [
-    {
-      id: 1,
-      title: "React Developer",
-      company: "WebAgency",
-      location: "Remote",
-      salary: "$75k - $95k",
-      matchScore: 92,
-      postedDate: "2 days ago",
-      logo: "💻",
-    },
-    {
-      id: 2,
-      title: "Frontend Engineer",
-      company: "CloudTech",
-      location: "Seattle, WA",
-      salary: "$85k - $110k",
-      matchScore: 88,
-      postedDate: "1 day ago",
-      logo: "☁️",
-    },
-    {
-      id: 3,
-      title: "JavaScript Developer",
-      company: "DataFlow",
-      location: "Austin, TX",
-      salary: "$70k - $90k",
-      matchScore: 85,
-      postedDate: "3 days ago",
-      logo: "📈",
-    },
-  ]
-  */
-
-  // TODO: Fetch real upcoming interviews from backend
-  const upcomingInterviews: any[] = []
-
-  /* DUMMY DATA - COMMENTED OUT
-  const upcomingInterviews = [
-    {
-      id: 1,
-      company: "DesignStudio",
-      position: "UI/UX Designer",
-      date: "2024-01-20",
-      time: "2:00 PM",
-      type: "Video Call",
-      interviewer: "Sarah Johnson",
-    },
-    {
-      id: 2,
-      company: "TechCorp Inc.",
-      position: "Senior Frontend Developer",
-      date: "2024-01-22",
-      time: "10:00 AM",
-      type: "Phone Call",
-      interviewer: "Mike Chen",
-    },
-  ]
-  */
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -411,12 +327,12 @@ export default function CandidateDashboard() {
                   {upcomingInterviews.map((interview) => (
                     <div key={interview.id} className="border border-gray-700 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold text-white">{interview.position}</h3>
+                        <h3 className="font-semibold text-white">{interview.job_title}</h3>
                         <Badge variant="outline" className="text-blue-400 border-blue-400">
                           {interview.type}
                         </Badge>
                       </div>
-                      <p className="text-blue-400 text-sm mb-2">{interview.company}</p>
+                      <p className="text-blue-400 text-sm mb-2">{interview.company_name}</p>
                       <div className="flex items-center justify-between text-sm text-gray-400">
                         <span className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
@@ -424,10 +340,10 @@ export default function CandidateDashboard() {
                         </span>
                         <span className="flex items-center">
                           <Clock className="w-4 h-4 mr-1" />
-                          {interview.time}
+                          {new Date(interview.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-2">Interviewer: {interview.interviewer}</p>
+                      <p className="text-xs text-gray-500 mt-2">Interviewer: {interview.interviewer_name}</p>
                     </div>
                   ))}
                 </div>

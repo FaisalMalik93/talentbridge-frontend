@@ -104,6 +104,13 @@ class JobsService {
   async getReceivedApplications() {
     return await apiClient.get<any[]>('/api/jobs/applications/received');
   }
+
+  /**
+   * Get recommended jobs for candidate
+   */
+  async getRecommendedJobs() {
+    return await apiClient.get<any[]>('/api/jobs/recommended');
+  }
 }
 
 export const jobsService = new JobsService();
