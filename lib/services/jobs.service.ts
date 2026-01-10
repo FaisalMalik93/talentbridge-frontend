@@ -97,6 +97,13 @@ class JobsService {
   async checkSavedStatus(jobId: string) {
     return await apiClient.get<{ saved: boolean }>(`/api/jobs/${jobId}/save/status`);
   }
+
+  /**
+   * Get applications received by employer
+   */
+  async getReceivedApplications() {
+    return await apiClient.get<any[]>('/api/jobs/applications/received');
+  }
 }
 
 export const jobsService = new JobsService();

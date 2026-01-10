@@ -32,7 +32,8 @@ import {
   Building,
   LayoutDashboard,
   Menu,
-  Heart
+  Heart,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -119,6 +120,10 @@ export function Header() {
             <Link href="/candidates" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
               <User className="w-4 h-4" />
               <span>Candidates</span>
+            </Link>
+            <Link href="/dashboard/applications" className={baseClass} onClick={() => mobile && setIsOpen(false)}>
+              <Users className="w-4 h-4" />
+              <span>Applied Candidates</span>
             </Link>
           </>
         )}

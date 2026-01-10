@@ -18,6 +18,7 @@ export interface Interview {
 }
 
 export interface CreateInterviewRequest {
+    application_id: string;
     job_id: string;
     company_name: string;
     job_title: string;
